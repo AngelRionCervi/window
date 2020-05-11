@@ -9,6 +9,7 @@ export default class _Window {
         this.width = width;
         this.height = height;
         this.postMinimizedHeight = null;
+        this.headerHeight = 40;
         this.x = x;
         this.y = y;
         this.selected = false;
@@ -59,6 +60,7 @@ export default class _Window {
         if (this.minimized) {
             this.elements.body.style.display = "none";
             this.postMinimizedHeight = this.height;
+            this.height = this.headerHeight;
         } else {
             this.elements.body.style.display = "block";
             this.height = this.postMinimizedHeight;
