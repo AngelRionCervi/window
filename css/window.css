@@ -1,0 +1,117 @@
+body {
+    overflow: hidden;
+}
+
+:root {
+    --win2-border-width: 15px;
+    --win2-corner-size: 40px;
+}
+
+.win {
+    position: absolute;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: 40px auto;
+}
+
+.win-header {
+    background-color: aqua;
+    border-radius: 10px;
+}
+
+.win-body {
+    background-color: white;
+    border-radius: 10px;
+}
+
+/*win 2*/
+
+.win2-container {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    width: 400px;
+    height: 400px;
+}
+
+.win2-corner-hor {
+    position: absolute;
+    background-color: red;
+    width: var(--win2-corner-size);
+    height: var(--win2-border-width);
+}
+
+.win2-corner-ver {
+    position: absolute;
+    background-color: red;
+    width: var(--win2-border-width);
+    height: var(--win2-corner-size);
+}
+
+.win2-border {
+    position: absolute;
+    background-color: blue;
+}
+
+.win2-corner-top-left {
+    top: 0;
+    left: 0;
+}
+
+.win2-corner-top-right {
+    top: 0;
+    right: 0;
+}
+
+.win2-corner-bottom-right {
+    bottom: 0;
+    right: 0;
+}
+
+.win2-corner-bottom-left {
+    bottom: 0;
+    left: 0;
+}
+
+.win2-border-top {
+    top: 0;
+    left: var(--win2-corner-size);
+    width: calc(100% - var(--win2-corner-size) * 2);
+    height: var(--win2-border-width);
+}
+
+.win2-border-right {
+    top: var(--win2-corner-size);
+    right: 0;
+    width: var(--win2-border-width);
+    height: calc(100% - var(--win2-corner-size) * 2);
+}
+
+.win2-border-bottom {
+    bottom: 0;
+    left: var(--win2-corner-size);
+    width: calc(100% - var(--win2-corner-size) * 2);
+    height: var(--win2-border-width);
+}
+
+.win2-border-left {
+    top: var(--win2-corner-size);
+    left: 0;
+    width: var(--win2-border-width);
+    height: calc(100% - var(--win2-corner-size) * 2);
+}
+
+.win2-content {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 40px auto;
+}
+
+.win2-header {
+    background-color: greenyellow;
+}
+
+.win2-body {
+    background-color: lightgray;
+}
