@@ -4,6 +4,7 @@ class _WindowList {
     constructor() {
         this.list = [];
         document.addEventListener("mousemove", this.targetDrag.bind(this));
+        document.addEventListener("mouseup", this.stopResize.bind(this));
     }
 
     getWinByID(id) {
@@ -18,6 +19,10 @@ class _WindowList {
         return this.list.find((el) => el.isSelected());
     }
 
+    getBorderSelectedWin() {
+        return this.list.find((el) => el.isBorderSelected());
+    }
+
     add(win) {
         binder(win, "removeEl", this.removeOfList.bind(this, win.getID()), true);
         binder(win, "focus", this.changeFocus.bind(this, win.getID()), true);
@@ -30,8 +35,17 @@ class _WindowList {
     }
 
     targetDrag(e) {
-        const win = this.getSelectedWin();
-        if (win) win.drag(e);
+        const winSelected = this.getSelectedWin();
+        const borderSelectedWin = this.getBorderSelectedWin();
+        if (winSelected) {
+            winSelected.drag(e);
+        } else if (borderSelectedWin) {
+            borderSelectedWin.resize(e, borderSelectedWin);
+        }
+    }
+
+    stopResize() {
+        this.list.map(el => el.borderLeave());
     }
 
     changeFocus(id) {

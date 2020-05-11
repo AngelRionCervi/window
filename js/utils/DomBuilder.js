@@ -1,5 +1,5 @@
 export class DomBuilder {
-    createNode(type, _class = null, id = null, inner = null, listener = null) {
+    createNode(type, _class = null, id = null, inner = null, listener = null, customAttr = null) {
         let el = document.createElement(type);
 
         if (_class) {
@@ -37,6 +37,10 @@ export class DomBuilder {
             }
         }
 
+        if (customAttr) {
+            this.addCustomAttr(el, customAttr);
+        }
+
         return el;
     }
 
@@ -44,6 +48,13 @@ export class DomBuilder {
         _class = [_class].flat();
         _class.forEach((c) => {
             el.classList.add(...c.split(" "));
+        });
+    }
+
+    addCustomAttr(el, customAttr) {
+        customAttr = [customAttr].flat();
+        customAttr.forEach((attr) => {
+            el.setAttribute(attr.type, attr.val);
         });
     }
 
@@ -60,10 +71,22 @@ export class DomBuilder {
         });
     }
 
-    enclose(nodes, _class = null, tag = "div") {
+    enclose(nodes, _class = null, tag = "div", listener = null, customAttrIn = null) {
         const container = document.createElement(tag);
+        if (customAttrIn) {
+            nodes.forEach((node) => {
+                this.addCustomAttr(node, customAttrIn);
+            })
+        }
         for (const node of nodes) container.appendChild(node);
         if (_class) this.addClasses(container, _class);
+        if (listener) {
+            const listeners = [listener].flat();
+            listeners.forEach((l) => {
+                this.createListener(container, l);
+            });
+        }
+        
         return container;
     }
 }

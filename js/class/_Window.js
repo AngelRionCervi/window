@@ -1,6 +1,6 @@
-import { DomBuilder } from "../utils/DomBuilder.js";
 import { Mouse } from "../utils/Mouse.js";
-const dob = new DomBuilder();
+import { windowEls } from "../class/windowEls.js";
+
 const _mouse = new Mouse();
 
 export default class _Window {
@@ -13,11 +13,13 @@ export default class _Window {
         this.x = x;
         this.y = y;
         this.selected = false;
+        this.borderSelected = null;
+        this.resizeStart = null;
         this.clickPos = { x: 0, y: 0 };
         this.winEl = null;
         this.id = "_" + Math.random();
         this.minimized = false;
-        this.elements = null;
+        this.elements = {};
     }
 
     build() {
@@ -26,26 +28,13 @@ export default class _Window {
             minimizeBtnListener: { type: "click", callback: this.minimize.bind(this) },
             headerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this) },
             headerMouseUpListener: { type: "mouseup", callback: this.release.bind(this) },
+            borders: [
+                { type: "mousedown", callback: this.borderSelect.bind(this) },
+                /*{ type: "mouseup", callback: this.borderLeave.bind(this) },*/
+            ],
         };
 
-        return new (function (_this) {
-            this.escapeBtn = (() =>
-                dob.createNode("button", "win-escape-btn", null, "x", listeners.escapeBtnListener))();
-            this.minimizeBtn = (() =>
-                dob.createNode("button", "win-minimize-btn", null, "v", listeners.minimizeBtnListener))();
-            this.enteteContainer = (() => dob.createNode("div", "win-entete", null, _this.entete))();
-            this.body = (() => dob.createNode("div", "win-body", null))();
-            this.header = (() => {
-                return dob.createNode(
-                    "div",
-                    "win-header",
-                    null,
-                    [this.enteteContainer, dob.enclose([this.escapeBtn, this.minimizeBtn], "win-btn-container")],
-                    [listeners.headerMouseDownListener, listeners.headerMouseUpListener]
-                );
-            })();
-            this.windowEl = (() => dob.createNode("div", "win win-container", null, [this.header, this.body]))();
-        })(this);
+        return windowEls(this, listeners);
     }
 
     create() {
@@ -93,6 +82,31 @@ export default class _Window {
         this.winEl.style.top = `${this.y}px`;
         this.winEl.style.width = `${this.width}px`;
         this.winEl.style.height = `${this.height}px`;
+    }
+
+    borderSelect(evt) {
+        this.resizeStart = { x: evt.screenX, y: evt.screenY };
+        this.borderSelected = evt.target.getAttribute("data-resize");
+    }
+
+    borderLeave() {
+        this.resizeStart = null;
+        this.borderSelected = null;
+    }
+
+    resize(evt) {
+        console.log("resize", evt, evt.screenX, this.resizeStart.x);
+        switch (this.borderSelected) {
+            case "right":
+                console.log("resize right");
+                this.width = this.resizeStart.x - this.x + evt.screenX - this.resizeStart.x;
+                break;
+        }
+        this.updatePosAndShape();
+    }
+
+    isBorderSelected() {
+        return this.borderSelected;
     }
 
     getID() {
