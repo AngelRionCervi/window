@@ -34,6 +34,7 @@ export default class _Window {
             minimizeBtnListener: { type: "click", callback: this.minimize.bind(this) },
             headerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this) },
             headerMouseUpListener: { type: "mouseup", callback: this.release.bind(this) },
+            containerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this, null) },
             borders: [
                 { type: "mousedown", callback: this.borderSelect.bind(this) },
                 /*{ type: "mouseup", callback: this.borderLeave.bind(this) },*/
@@ -67,9 +68,10 @@ export default class _Window {
         this.winEl.remove();
     }
 
-    focus(e) {
+    focus(evt = null) {
+        if (!evt) return;
         this.selected = true;
-        this.clickPos = _mouse.getCursorPos(this.winEl, e);
+        this.clickPos = _mouse.getCursorPos(this.winEl, evt);
     }
 
     release() {

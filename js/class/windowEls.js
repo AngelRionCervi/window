@@ -95,15 +95,21 @@ export const windowEls = (_this, listeners) =>
         })();
         this.windowContent = (() => dob.createNode("div", "win2-content", null, [this.header, this.body]))();
         this.windowEl = (() =>
-            dob.createNode("div", "win2-container", null, [
-                this.windowContent,
-                this.borderTop,
-                this.cornerTopRight,
-                this.borderRight,
-                this.cornerBottomRight,
-                this.borderBottom,
-                this.cornerBottomLeft,
-                this.borderLeft,
-                this.cornerTopLeft,
-            ]))();
+            dob.createNode(
+                "div",
+                "win2-container",
+                null,
+                [
+                    this.windowContent,
+                    this.borderTop,
+                    this.cornerTopRight,
+                    this.borderRight,
+                    this.cornerBottomRight,
+                    this.borderBottom,
+                    this.cornerBottomLeft,
+                    this.borderLeft,
+                    this.cornerTopLeft,
+                ],
+                listeners.containerMouseDownListener
+            ))();
     })();
