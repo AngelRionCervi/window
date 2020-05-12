@@ -15,11 +15,17 @@ export default class _Window {
         this.selected = false;
         this.borderSelected = null;
         this.resizeStart = null;
+        this.mousePosOnBorder = null;
         this.clickPos = { x: 0, y: 0 };
         this.winEl = null;
         this.id = "_" + Math.random();
         this.minimized = false;
         this.elements = {};
+        this.preResizeWidth = null;
+        this.preResizeHeight = null;
+        this.borderWidth = 10;
+        this.minWidth = 60;
+        this.minHeight = 40;
     }
 
     build() {
@@ -85,7 +91,10 @@ export default class _Window {
     }
 
     borderSelect(evt) {
-        this.resizeStart = { x: evt.screenX, y: evt.screenY };
+        this.resizeStart = { x: evt.clientX, y: evt.clientY };
+        this.mousePosOnBorder = _mouse.getCursorPos(evt.target, evt);
+        this.preResizeWidth = this.width;
+        this.preResizeHeight = this.height;
         this.borderSelected = evt.target.getAttribute("data-resize");
     }
 
@@ -95,13 +104,42 @@ export default class _Window {
     }
 
     resize(evt) {
-        console.log("resize", evt, evt.screenX, this.resizeStart.x);
-        switch (this.borderSelected) {
-            case "right":
-                console.log("resize right");
-                this.width = this.resizeStart.x - this.x + evt.screenX - this.resizeStart.x;
-                break;
+        const dirObj = {
+            right: () => {
+                this.width = evt.clientX - this.resizeStart.x + this.preResizeWidth;
+            },
+
+            left: () => {
+                this.x = evt.clientX - this.mousePosOnBorder.x;
+                this.width = this.resizeStart.x - evt.clientX + this.preResizeWidth;
+                if (this.width - this.minWidth - this.borderWidth * 2 <= 0) {
+                    this.x += this.width - this.borderWidth * 2 - this.minWidth;
+                }
+            },
+
+            bottom: () => {
+                this.height = evt.clientY - this.resizeStart.y + this.preResizeHeight;
+            },
+
+            top: () => {
+                this.y = evt.clientY - this.mousePosOnBorder.y;
+                this.height = this.resizeStart.y - evt.clientY + this.preResizeHeight;
+                if (this.height - this.minHeight - this.borderWidth * 2 <= 0) {
+                    this.y += this.height - this.borderWidth * 2 - this.minHeight;
+                }
+            },
+        };
+
+        const dirStrings = this.borderSelected.split("-");
+        dirStrings.forEach((direction) => dirObj[direction]());
+
+        if (this.width - this.minWidth - this.borderWidth * 2 <= 0) {
+            this.width = this.minWidth + this.borderWidth * 2;
         }
+        if (this.height - this.minHeight - this.borderWidth * 2 <= 0) {
+            this.height = this.minHeight + this.borderWidth * 2;
+        }
+   
         this.updatePosAndShape();
     }
 

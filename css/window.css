@@ -3,8 +3,8 @@ body {
 }
 
 :root {
-    --win2-border-width: 5px;
-    --win2-corner-size: 40px;
+    --win2-border-width: 7px;
+    --win2-corner-size: 14px;
 }
 
 .win {
@@ -114,4 +114,20 @@ body {
 
 .win2-body {
     background-color: lightgray;
+}
+
+.win2-border-top, .win2-border-bottom {
+    cursor: ns-resize;
+}
+
+.win2-border-right, .win2-border-left {
+    cursor: ew-resize;
+}
+
+.win2-corner-top-right, .win2-corner-bottom-left {
+    cursor: nesw-resize;
+}
+
+.win2-corner-top-left, .win2-corner-bottom-right {
+    cursor: nwse-resize;
 }
