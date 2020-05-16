@@ -1,9 +1,10 @@
-import { spy, binder } from "../utils/Spy.js";
+import { binder } from "../utils/Spy.js";
 
 class _WindowList {
     constructor() {
         this.list = [];
         this.focusedID = null;
+        this.startingZI = 5;
         document.addEventListener("mousemove", this.targetDrag.bind(this));
         document.addEventListener("mouseup", this.stopResize.bind(this));
     }
@@ -24,12 +25,16 @@ class _WindowList {
         return this.list.find((el) => el.isBorderSelected());
     }
 
+    getWinByZindex(zIndex) {
+        return this.list.find((el) => Number(el.getEl().style.zIndex) === zIndex);
+    }
+
     add(win) {
         binder(win, "removeEl", this.removeOfList.bind(this, win.getID()), true);
         binder(win, "focus", this.changeFocus.bind(this, win.getID()), true);
         win.create();
         this.list.push(win);
-        this.changeFocus(win.getID());
+        this.initZindex(win.getID());
     }
 
     removeOfList(id) {
@@ -50,27 +55,41 @@ class _WindowList {
         this.list.map((el) => el.borderLeave());
     }
 
+    // not sure tbh
     changeFocus(id) {
         if (this.focusedID === id) return;
         this.focusedID = id;
+
+        const totalZI = this.list.length + this.startingZI;
         const win = this.getWinByID(id);
-        win.getEl().style.zIndex = 0;
-        this.list
-            .sort((a, b) => a.getEl().style.zIndex + b.getEl().style.zIndex)
-            .forEach((win, index, wins) => {
-                const el = win.getEl();
-                let newZI = Number(el.style.zIndex) - 1;
-                if (index > 0) {
-                    const lastWinEl = wins[index - 1].getEl();
-                    const lastZI = Number(lastWinEl.style.zIndex);
-                    if (newZI - lastZI > 1) {
-                        newZI = (newZI - lastZI) * -1;
-                        lastWinEl.style.zIndex = newZI - 1;
-                    }
+        const winToReplace = this.getWinByZindex(totalZI); // currently focused win
+
+        win.getEl().style.zIndex = totalZI; // focus the win
+        winToReplace.getEl().style.zIndex = totalZI - 1; // previsously focused win gets -1
+
+        const otherWins = this.list //get all the other wins sorted by zIndex, largest zIndex first
+            .filter((el) => el.id !== id && el.id !== winToReplace.getID())
+            .sort((b, a) => Number(a.getEl().style.zIndex) - Number(b.getEl().style.zIndex));
+
+        otherWins.forEach((win, listIndex, wins) => { // loopy loop
+            const el = win.getEl();
+            const zIndex = Number(el.style.zIndex);
+            if (zIndex === totalZI - 1) { // look mom im high
+                for (let u = listIndex; u < wins.length - listIndex; u++) {
+                    const restEl = wins[u].getEl();
+                    const restZindex = Number(restEl.style.zIndex);
+                    if (u > 0 && Number(wins[u - 1].getEl().style.zIndex) - restZindex > 0) break; // gap is > 0 we stop -1 the other zIndexes
+                    restEl.style.zIndex = restZindex - 1; // go down >:(
                 }
-                el.style.zIndex = newZI;
-            });
-        console.log(this.list.map((el) => el.getEl().style.zIndex));
+            }
+        });
+        //console.log(this.list.map((el) => el.getEl().style.zIndex));
+    }
+
+    initZindex(id) {
+        const win = this.getWinByID(id);
+        win.getEl().style.zIndex = this.list.length + this.startingZI;
+        //console.log(this.list.map((el) => el.getEl().style.zIndex));
     }
 }
 

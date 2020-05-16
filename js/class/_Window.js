@@ -9,7 +9,6 @@ export default class _Window {
         this.width = width;
         this.height = height;
         this.postMinimizedHeight = null;
-        this.headerHeight = 40;
         this.x = x;
         this.y = y;
         this.selected = false;
@@ -23,9 +22,10 @@ export default class _Window {
         this.elements = {};
         this.preResizeWidth = null;
         this.preResizeHeight = null;
+        // user decides
         this.borderWidth = 10;
-        this.minWidth = 60;
-        this.minHeight = 40;
+        this.minWidth = 60 + this.borderWidth * 2;
+        this.headerHeight = 40 + this.borderWidth * 2;
     }
 
     build() {
@@ -35,13 +35,15 @@ export default class _Window {
             headerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this) },
             headerMouseUpListener: { type: "mouseup", callback: this.release.bind(this) },
             containerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this, null) },
-            borders: [
-                { type: "mousedown", callback: this.borderSelect.bind(this) },
-                /*{ type: "mouseup", callback: this.borderLeave.bind(this) },*/
-            ],
+            borders: { type: "mousedown", callback: this.borderSelect.bind(this) },
         };
 
-        return windowEls(this, listeners);
+        const options = {
+            borderWidth: "7px",
+            cornerSize: "14px",
+        }
+
+        return windowEls(this, listeners, options);
     }
 
     create() {
@@ -54,11 +56,9 @@ export default class _Window {
     minimize() {
         this.minimized = !this.minimized;
         if (this.minimized) {
-            this.elements.body.style.display = "none";
             this.postMinimizedHeight = this.height;
             this.height = this.headerHeight;
         } else {
-            this.elements.body.style.display = "block";
             this.height = this.postMinimizedHeight;
         }
         this.updatePosAndShape();
@@ -114,8 +114,8 @@ export default class _Window {
             left: () => {
                 this.x = evt.clientX - this.mousePosOnBorder.x;
                 this.width = this.resizeStart.x - evt.clientX + this.preResizeWidth;
-                if (this.width - this.minWidth - this.borderWidth * 2 <= 0) {
-                    this.x += this.width - this.borderWidth * 2 - this.minWidth;
+                if (this.width - this.minWidth <= 0) {
+                    this.x += this.width - this.minWidth;
                 }
             },
 
@@ -126,22 +126,25 @@ export default class _Window {
             top: () => {
                 this.y = evt.clientY - this.mousePosOnBorder.y;
                 this.height = this.resizeStart.y - evt.clientY + this.preResizeHeight;
-                if (this.height - this.minHeight - this.borderWidth * 2 <= 0) {
-                    this.y += this.height - this.borderWidth * 2 - this.minHeight;
+                if (this.height - this.headerHeight <= 0) {
+                    this.y += this.height - this.headerHeight;
                 }
             },
         };
 
-        const dirStrings = this.borderSelected.split("-");
+        let dirStrings = this.borderSelected.split("-");
+        if (this.minimized) {
+            dirStrings = dirStrings.filter((el) => el !== "top" && el !== "bottom");
+        }
         dirStrings.forEach((direction) => dirObj[direction]());
 
-        if (this.width - this.minWidth - this.borderWidth * 2 <= 0) {
-            this.width = this.minWidth + this.borderWidth * 2;
+        if (this.width - this.minWidth <= 0) {
+            this.width = this.minWidth;
         }
-        if (this.height - this.minHeight - this.borderWidth * 2 <= 0) {
-            this.height = this.minHeight + this.borderWidth * 2;
+        if (this.height - this.headerHeight <= 0) {
+            this.height = this.headerHeight;
         }
-   
+
         this.updatePosAndShape();
     }
 
@@ -155,6 +158,10 @@ export default class _Window {
 
     isSelected() {
         return this.selected;
+    }
+
+    isMinimized() {
+        return this.minimized;
     }
 
     getEl() {

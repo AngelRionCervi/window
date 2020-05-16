@@ -1,13 +1,15 @@
 export class DomBuilder {
-    createNode(type, _class = null, id = null, inner = null, listener = null, customAttr = null) {
-        let el = document.createElement(type);
+    element = null;
+
+    createNode(tag, _class = null, id = null, inner = null, listener = null, customAttr = null, inlineStyle = null) {
+        this.element = document.createElement(tag);
 
         if (_class) {
-            this.addClasses(el, _class);
+            this.addClasses(_class);
         }
 
         if (id) {
-            el.id = id;
+            this.element.id = id;
         }
 
         if (inner) {
@@ -15,13 +17,13 @@ export class DomBuilder {
             inner.forEach((content) => {
                 switch (typeof content) {
                     case "string":
-                        el.innerText = content;
+                        this.element.innerText = content;
                         break;
                     case "number":
-                        el.innerText = content.toString();
+                        this.element.innerText = content.toString();
                         break;
                     case "object":
-                        el.appendChild(content);
+                        this.element.appendChild(content);
                         break;
                 }
             });
@@ -30,36 +32,53 @@ export class DomBuilder {
         if (listener) {
             if (Array.isArray(listener)) {
                 listener.forEach((l) => {
-                    this.createListener(el, l);
+                    this.createListener(l);
                 });
             } else {
-                this.createListener(el, listener);
+                this.createListener(listener);
             }
         }
 
-        if (customAttr) {
-            this.addCustomAttr(el, customAttr);
+        if (inlineStyle) {
+            this.addInlineStyle(customAttr);
         }
 
-        return el;
+        if (customAttr) {
+            this.addCustomAttr(customAttr);
+        }
+
+        return this;
     }
 
-    addClasses(el, _class) {
+    addClasses(_class, node = null) {
         _class = [_class].flat();
         _class.forEach((c) => {
+            const el = node ? node : this.element;
             el.classList.add(...c.split(" "));
         });
+        return this;
     }
 
-    addCustomAttr(el, customAttr) {
+    addInlineStyle(styles, node = null) {
+        Object.keys(styles).forEach((key) => {
+            const el = node ? node : this.element;
+            el.style[key] = styles[key];
+        });
+        return this;
+    }
+
+    addCustomAttr(customAttr, node = null) {
         customAttr = [customAttr].flat();
         customAttr.forEach((attr) => {
+            const el = node ? node : this.element;
             el.setAttribute(attr.type, attr.val);
         });
+        return this;
     }
 
-    createListener(el, l) {
+    createListener(l, node = null) {
         if (!l.hasOwnProperty("args")) l.args = [];
+        const el = node ? node : this.element;
         el.addEventListener(l.type, (e) => {
             e.preventDefault();
             if (l.hasOwnProperty("event") && !l.event) {
@@ -69,24 +88,30 @@ export class DomBuilder {
             }
             return false;
         });
+        return this;
+    }
+
+    done() {
+        return this.element;
     }
 
     enclose(nodes, _class = null, tag = "div", listener = null, customAttrIn = null) {
-        const container = document.createElement(tag);
+        this.element = document.createElement(tag);
+
+        for (const node of nodes) this.element.appendChild(node);
         if (customAttrIn) {
             nodes.forEach((node) => {
-                this.addCustomAttr(node, customAttrIn);
-            })
+                this.addCustomAttr(customAttrIn, node);
+            });
         }
-        for (const node of nodes) container.appendChild(node);
-        if (_class) this.addClasses(container, _class);
+        if (_class) this.addClasses(_class);
         if (listener) {
             const listeners = [listener].flat();
             listeners.forEach((l) => {
-                this.createListener(container, l);
+                this.createListener(l);
             });
         }
-        
-        return container;
+
+        return this;
     }
 }
