@@ -225,7 +225,19 @@ export const windowEls = (_this, listeners, options) =>
                 )
                 .done();
         })();
-        this.windowContent = (() => dob.createNode("div", "win2-content", null, [this.header, this.body]).done())();
+        this.windowContent = (() =>
+            dob
+                .createNode("div", "win2-content", null, [this.header, this.body])
+                .addInlineStyle({
+                    display: "grid",
+                    gridTemplateRows: `${options.headerHeight} auto`,
+                    position: "absolute",
+                    left: options.borderWidth,
+                    top: options.borderWidth,
+                    width: `calc(100% - ${options.borderWidth} * 2)`,
+                    height: `calc(100% - ${options.borderWidth} * 2)`,
+                })
+                .done())();
         this.windowEl = (() =>
             dob
                 .createNode(

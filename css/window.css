@@ -22,10 +22,9 @@ body {
 }
 
 
+
 .win2-content {
-    height: 100%;
-    display: grid;
-    grid-template-rows: 40px auto;
+    
 }
 
 .win2-header {

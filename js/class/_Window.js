@@ -25,7 +25,7 @@ export default class _Window {
         // user decides
         this.borderWidth = 10;
         this.minWidth = 60 + this.borderWidth * 2;
-        this.headerHeight = 40 + this.borderWidth * 2;
+        this.headerHeight = 40 + this.borderWidth;
     }
 
     build() {
@@ -41,7 +41,8 @@ export default class _Window {
         const options = {
             borderWidth: "7px",
             cornerSize: "14px",
-        }
+            headerHeight: `${this.headerHeight}px`,
+        };
 
         return windowEls(this, listeners, options);
     }
@@ -57,7 +58,7 @@ export default class _Window {
         this.minimized = !this.minimized;
         if (this.minimized) {
             this.postMinimizedHeight = this.height;
-            this.height = this.headerHeight;
+            this.height = this.headerHeight + this.borderWidth;
         } else {
             this.height = this.postMinimizedHeight;
         }
@@ -126,8 +127,8 @@ export default class _Window {
             top: () => {
                 this.y = evt.clientY - this.mousePosOnBorder.y;
                 this.height = this.resizeStart.y - evt.clientY + this.preResizeHeight;
-                if (this.height - this.headerHeight <= 0) {
-                    this.y += this.height - this.headerHeight;
+                if (this.height - this.headerHeight <= this.borderWidth) {
+                    this.y += this.height - this.headerHeight - this.borderWidth;
                 }
             },
         };
@@ -141,8 +142,8 @@ export default class _Window {
         if (this.width - this.minWidth <= 0) {
             this.width = this.minWidth;
         }
-        if (this.height - this.headerHeight <= 0) {
-            this.height = this.headerHeight;
+        if (this.height - this.headerHeight <= this.borderWidth) {
+            this.height = this.headerHeight + this.borderWidth;
         }
 
         this.updatePosAndShape();
