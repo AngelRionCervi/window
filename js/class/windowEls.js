@@ -221,7 +221,7 @@ export const windowEls = (_this, listeners, options) =>
                     "win2-header",
                     null,
                     [this.enteteContainer, dob.enclose([this.escapeBtn, this.minimizeBtn], "win-btn-container").done()],
-                    [listeners.headerMouseDownListener, listeners.headerMouseUpListener]
+                    listeners.headerMouseDownListener
                 )
                 .done();
         })();

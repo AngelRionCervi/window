@@ -6,7 +6,7 @@ class _WindowList {
         this.focusedID = null;
         this.startingZI = 5;
         document.addEventListener("mousemove", this.targetDrag.bind(this));
-        document.addEventListener("mouseup", this.stopResize.bind(this));
+        document.addEventListener("mouseup", this.deselect.bind(this));
     }
 
     getWinByID(id) {
@@ -51,8 +51,14 @@ class _WindowList {
         }
     }
 
-    stopResize() {
-        this.list.map((el) => el.borderLeave());
+    deselect(evt) {
+        const winSelected = this.getSelectedWin();
+        const borderSelectedWin = this.getBorderSelectedWin();
+        if (winSelected) {
+            winSelected.release(evt);
+        } else if (borderSelectedWin) {
+            borderSelectedWin.borderLeave(evt);
+        }
     }
 
     // not sure tbh

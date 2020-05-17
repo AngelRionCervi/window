@@ -39,7 +39,6 @@ export default class _Window {
             escapeBtnListener: { type: "click", callback: this.removeEl.bind(this) },
             minimizeBtnListener: { type: "click", callback: this.minimize.bind(this) },
             headerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this) },
-            headerMouseUpListener: { type: "mouseup", callback: this.release.bind(this) },
             containerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this, null) },
             borders: { type: "mousedown", callback: this.borderSelect.bind(this) },
         };
@@ -127,28 +126,9 @@ export default class _Window {
         this.windowClickPos = _mouse.getCursorPos(this.winEl, evt);
     }
 
-    release() {
+    release(evt) {
         this.selected = false;
-        console.log(this.maximizeSides)
-        if (Object.values(this.maximizeSides).some((el) => el)) {
-            this.maximize();
-        }
-    }
-
-    drag(evt) {
-        if (!this.selected || !this.windowClickPos) return;
-
-        if (this.maximized) {
-            this.width = this.preMaximizedWidth;
-            this.height = this.preMaximizedHeight;
-            this.windowClickPos.x =
-                this.windowClickPos.x * (this.preMaximizedWidth / this.maximizedData.width) - this.borderWidth;
-            this.maximized = false;
-        }
-
-        this.x = evt.clientX - this.windowClickPos.x;
-        this.y = evt.clientY - this.windowClickPos.y;
-        console.log(this.windowClickPos.x * (this.preMaximizedWidth / this.maximizedData.width));
+        console.log(evt)
 
         for (const key in this.maximizeSides) {
             this.maximizeSides[key] = false;
@@ -162,6 +142,34 @@ export default class _Window {
         if (evt.clientY < 10) {
             this.maximizeSides.top = true;
         }
+
+        if (Object.values(this.maximizeSides).some((el) => el)) {
+            this.maximize();
+        }
+    }
+
+    drag(evt) {
+        if (!this.selected || !this.windowClickPos) return;
+
+        if (this.maximized) {
+            this.width = this.preMaximizedWidth;
+            this.height = this.preMaximizedHeight;
+            this.windowClickPos.x *= this.preMaximizedWidth / this.maximizedData.width; // new click is at the rario of the maximized window / by the pre maximized width
+
+            // so that we dont hit borders when dragging maximized window
+            if (this.windowClickPos.x <= this.borderWidth) {
+                this.windowClickPos.x = this.borderWidth + 1;
+            } else if (this.windowClickPos.x >= this.width - this.borderWidth) {
+                this.windowClickPos.x = this.width - this.borderWidth - 1;
+            }
+
+            this.maximized = false;
+        }
+
+        this.x = evt.clientX - this.windowClickPos.x;
+        this.y = evt.clientY - this.windowClickPos.y;
+
+        
 
         this.updatePosAndShape();
     }
