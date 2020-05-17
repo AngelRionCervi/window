@@ -5,12 +5,7 @@ const _mouse = new Mouse();
 
 export default class _Window {
     constructor(entete, x, y, width, height) {
-        this.entete = entete;
-        this.width = width;
-        this.height = height;
         this.postMinimizedHeight = null;
-        this.x = x;
-        this.y = y;
         this.selected = false;
         this.borderSelected = null;
         this.resizeStart = null;
@@ -32,6 +27,11 @@ export default class _Window {
         this.minWidth = 60 + this.borderWidth * 2;
         this.headerHeight = 40 + this.borderWidth;
         this.enableGesture = true;
+        this.entete = entete;
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
     }
 
     build() {
