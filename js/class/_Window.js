@@ -4,7 +4,7 @@ import { windowEls } from "../class/windowEls.js";
 const _mouse = new Mouse();
 
 export default class _Window {
-    constructor(entete, x, y, width, height) {
+    constructor(options, node) {
         this.postMinimizedHeight = null;
         this.selected = false;
         this.borderSelected = null;
@@ -23,15 +23,16 @@ export default class _Window {
         this.maximizedData = null;
         this.maximizeSides = { left: null, right: null, top: null };
         // user decides
-        this.borderWidth = 10;
-        this.minWidth = 60 + this.borderWidth * 2;
-        this.headerHeight = 40 + this.borderWidth;
-        this.enableGesture = true;
-        this.entete = entete;
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
+        this.borderWidth = options.borderWidth || 20;
+        this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 60 + this.borderWidth * 2;
+        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : 30 + this.borderWidth;
+        this.cornerSize = options.cornerSize || 16;
+        this.enableGesture = options.gesture === true;
+        this.entete = options.entete || "";
+        this.width = options.width || 100;
+        this.height = options.height + this.headerHeight || 100;
+        this.x = options.x || 100;
+        this.y = options.y || 100;
     }
 
     build() {
@@ -44,8 +45,8 @@ export default class _Window {
         };
 
         const options = {
-            borderWidth: "7px",
-            cornerSize: "14px",
+            borderWidth: `${this.borderWidth}px`,
+            cornerSize: `${this.cornerSize}px`,
             headerHeight: `${this.headerHeight}px`,
         };
 
@@ -168,8 +169,6 @@ export default class _Window {
 
         this.x = evt.clientX - this.windowClickPos.x;
         this.y = evt.clientY - this.windowClickPos.y;
-
-        
 
         this.updatePosAndShape();
     }
