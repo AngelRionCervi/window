@@ -22,7 +22,7 @@ class _WindowList {
     }
 
     getBorderSelectedWin() {
-        return this.list.find((el) => el.isBorderSelected());
+        return this.list.find((el) => el.isBorderSelected()); 
     }
 
     getWinByZindex(zIndex) {
