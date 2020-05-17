@@ -25,7 +25,7 @@ export default class _Window {
         this.preResizeHeight = null;
         this.preMaximizedWidth = null;
         this.preMaximizedHeight = null;
-        this.maximizedData = { x: 0, y: 0, width: 0, height: 0 };
+        this.maximizedData = null;
         this.maximizeSides = { left: null, right: null, top: null };
         // user decides
         this.borderWidth = 10;
@@ -71,7 +71,6 @@ export default class _Window {
     }
 
     maximize() {
-        console.log("maximizing");
         this.preMaximizedWidth = this.width;
         this.preMaximizedHeight = this.height;
 
@@ -81,6 +80,7 @@ export default class _Window {
             width: null,
             height: null,
         };
+
         for (const key in this.maximizeSides) {
             if (this.maximizeSides[key]) {
                 switch (key) {
@@ -128,7 +128,6 @@ export default class _Window {
 
     release(evt) {
         this.selected = false;
-        console.log(evt)
 
         for (const key in this.maximizeSides) {
             this.maximizeSides[key] = false;
@@ -164,6 +163,7 @@ export default class _Window {
             }
 
             this.maximized = false;
+            this.maximizedData = null;
         }
 
         this.x = evt.clientX - this.windowClickPos.x;

@@ -29,6 +29,10 @@ class _WindowList {
         return this.list.find((el) => Number(el.getEl().style.zIndex) === zIndex);
     }
 
+    getFrontWin() {
+        return this.list.sort((a, b) => Number(b.getEl().style.zIndex) - Number(a.getEl().style.zIndex))[0];
+    }
+
     add(win) {
         binder(win, "removeEl", this.removeOfList.bind(this, win.getID()), true);
         binder(win, "focus", this.changeFocus.bind(this, win.getID()), true);
@@ -68,7 +72,7 @@ class _WindowList {
 
         const totalZI = this.list.length + this.startingZI;
         const win = this.getWinByID(id);
-        const winToReplace = this.getWinByZindex(totalZI); // currently focused win
+        const winToReplace = this.getFrontWin(); // currently focused win
 
         win.getEl().style.zIndex = totalZI; // focus the win
         winToReplace.getEl().style.zIndex = totalZI - 1; // previsously focused win gets -1
