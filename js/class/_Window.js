@@ -15,17 +15,23 @@ export default class _Window {
         this.borderSelected = null;
         this.resizeStart = null;
         this.mousePosOnBorder = null;
-        this.clickPos = { x: 0, y: 0 };
+        this.windowClickPos = { x: 0, y: 0 };
         this.winEl = null;
         this.id = "_" + Math.random();
         this.minimized = false;
+        this.maximized = false;
         this.elements = {};
         this.preResizeWidth = null;
         this.preResizeHeight = null;
+        this.preMaximizedWidth = null;
+        this.preMaximizedHeight = null;
+        this.maximizedData = { x: 0, y: 0, width: 0, height: 0 };
+        this.maximizeSides = { left: null, right: null, top: null };
         // user decides
         this.borderWidth = 10;
         this.minWidth = 60 + this.borderWidth * 2;
         this.headerHeight = 40 + this.borderWidth;
+        this.enableGesture = true;
     }
 
     build() {
@@ -65,6 +71,52 @@ export default class _Window {
         this.updatePosAndShape();
     }
 
+    maximize() {
+        console.log("maximizing");
+        this.preMaximizedWidth = this.width;
+        this.preMaximizedHeight = this.height;
+
+        const maxProps = {
+            x: null,
+            y: null,
+            width: null,
+            height: null,
+        };
+        for (const key in this.maximizeSides) {
+            if (this.maximizeSides[key]) {
+                switch (key) {
+                    case "left":
+                        maxProps.x = 0;
+                        maxProps.y = 0;
+                        maxProps.width = window.innerWidth / 2;
+                        maxProps.height = window.innerHeight;
+                        break;
+                    case "right":
+                        maxProps.x = window.innerWidth / 2;
+                        maxProps.y = 0;
+                        maxProps.width = window.innerWidth / 2;
+                        maxProps.height = window.innerHeight;
+                        break;
+                    case "top":
+                        maxProps.x = 0;
+                        maxProps.y = 0;
+                        maxProps.width = window.innerWidth;
+                        maxProps.height = window.innerHeight;
+                        break;
+                }
+            }
+        }
+
+        this.x = maxProps.x;
+        this.y = maxProps.y;
+        this.width = maxProps.width;
+        this.height = maxProps.height;
+
+        this.maximized = true;
+        this.maximizedData = maxProps;
+        this.updatePosAndShape();
+    }
+
     removeEl() {
         this.winEl.remove();
     }
@@ -72,17 +124,45 @@ export default class _Window {
     focus(evt = null) {
         if (!evt) return;
         this.selected = true;
-        this.clickPos = _mouse.getCursorPos(this.winEl, evt);
+        this.windowClickPos = _mouse.getCursorPos(this.winEl, evt);
     }
 
     release() {
         this.selected = false;
+        console.log(this.maximizeSides)
+        if (Object.values(this.maximizeSides).some((el) => el)) {
+            this.maximize();
+        }
     }
 
-    drag(e) {
-        if (!this.selected || !this.clickPos) return;
-        this.x = e.clientX - this.clickPos.x;
-        this.y = e.clientY - this.clickPos.y;
+    drag(evt) {
+        if (!this.selected || !this.windowClickPos) return;
+
+        if (this.maximized) {
+            this.width = this.preMaximizedWidth;
+            this.height = this.preMaximizedHeight;
+            this.windowClickPos.x =
+                this.windowClickPos.x * (this.preMaximizedWidth / this.maximizedData.width) - this.borderWidth;
+            this.maximized = false;
+        }
+
+        this.x = evt.clientX - this.windowClickPos.x;
+        this.y = evt.clientY - this.windowClickPos.y;
+        console.log(this.windowClickPos.x * (this.preMaximizedWidth / this.maximizedData.width));
+
+        for (const key in this.maximizeSides) {
+            this.maximizeSides[key] = false;
+        }
+
+        if (evt.clientX < 10) {
+            this.maximizeSides.left = true;
+        } else if (evt.clientX > window.innerWidth - 10) {
+            this.maximizeSides.right = true;
+        }
+        if (evt.clientY < 10) {
+            this.maximizeSides.top = true;
+        }
+
         this.updatePosAndShape();
     }
 
@@ -146,6 +226,7 @@ export default class _Window {
             this.height = this.headerHeight + this.borderWidth;
         }
 
+        this.maximized = false;
         this.updatePosAndShape();
     }
 
