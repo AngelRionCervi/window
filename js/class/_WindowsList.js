@@ -1,10 +1,12 @@
 import { binder } from "../utils/Spy.js";
+import { _MaximizedPreview } from "./_MaximizedPreview.js";
 
 class _WindowList {
     constructor() {
         this.list = [];
         this.focusedID = null;
         this.startingZI = 5;
+        this.maxPreview = new _MaximizedPreview();
         document.addEventListener("mousemove", this.targetDrag.bind(this));
         document.addEventListener("mouseup", this.deselect.bind(this));
     }
@@ -37,6 +39,7 @@ class _WindowList {
         binder(win, "removeEl", this.removeOfList.bind(this, win.getID()), true);
         binder(win, "focus", this.changeFocus.bind(this, win.getID()), true);
         win.create();
+        win.emitter.on("resize", console.log)
         this.list.push(win);
         this.initZindex(win.getID());
     }
@@ -101,6 +104,7 @@ class _WindowList {
         win.getEl().style.zIndex = this.list.length + this.startingZI;
         //console.log(this.list.map((el) => el.getEl().style.zIndex));
     }
+
 }
 
 export default new _WindowList();

@@ -1,5 +1,6 @@
 import { Mouse } from "../utils/Mouse.js";
 import { windowEls } from "../class/windowEls.js";
+import { Emitter } from "../utils/Emitter.js";
 
 const _mouse = new Mouse();
 
@@ -22,6 +23,7 @@ export default class _Window {
         this.preMaximizedHeight = null;
         this.maximizedData = null;
         this.maximizeSides = { left: null, right: null, top: null };
+        this.emitter = new Emitter();
         // user decides
         this.borderWidth = options.borderWidth || 20;
         this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 60 + this.borderWidth * 2;
@@ -33,6 +35,7 @@ export default class _Window {
         this.height = options.height + this.headerHeight || 100;
         this.x = options.x || 100;
         this.y = options.y || 100;
+        this.maximizeTriggerArea = options.maximizeTriggerArea || 12;
     }
 
     build() {
@@ -69,6 +72,7 @@ export default class _Window {
             this.height = this.postMinimizedHeight;
         }
         this.updatePosAndShape();
+        this.emitter.emit('minimizedToggle', this.minimized);
     }
 
     maximize() {
@@ -114,17 +118,20 @@ export default class _Window {
 
         this.maximized = true;
         this.maximizedData = maxProps;
+        this.emitter.emit('maximizedToggle', maxProps);
         this.updatePosAndShape();
     }
 
     removeEl() {
         this.winEl.remove();
+        this.emitter.emit('remove');
     }
 
     focus(evt = null) {
         if (!evt) return;
         this.selected = true;
         this.windowClickPos = _mouse.getCursorPos(this.winEl, evt);
+        this.emitter.emit('focus');
     }
 
     release(evt) {
@@ -134,14 +141,16 @@ export default class _Window {
             this.maximizeSides[key] = false;
         }
 
-        if (evt.clientX < 10) {
+        if (evt.clientX < this.maximizeTriggerArea) {
             this.maximizeSides.left = true;
-        } else if (evt.clientX > window.innerWidth - 10) {
+        } else if (evt.clientX > window.innerWidth - this.maximizeTriggerArea) {
             this.maximizeSides.right = true;
         }
-        if (evt.clientY < 10) {
+        if (evt.clientY < this.maximizeTriggerArea) {
             this.maximizeSides.top = true;
         }
+
+        this.emitter.emit('release');
 
         if (Object.values(this.maximizeSides).some((el) => el)) {
             this.maximize();
@@ -171,6 +180,7 @@ export default class _Window {
         this.y = evt.clientY - this.windowClickPos.y;
 
         this.updatePosAndShape();
+        this.emitter.emit('drag');
     }
 
     updatePosAndShape() {
@@ -186,11 +196,13 @@ export default class _Window {
         this.preResizeWidth = this.width;
         this.preResizeHeight = this.height;
         this.borderSelected = evt.target.getAttribute("data-resize");
+        this.emitter.emit('borderSelected');
     }
 
     borderLeave() {
         this.resizeStart = null;
         this.borderSelected = null;
+        this.emitter.emit('borderReleased');
     }
 
     resize(evt) {
@@ -234,6 +246,7 @@ export default class _Window {
         }
 
         this.maximized = false;
+        this.emitter.emit('resize', dirStrings);
         this.updatePosAndShape();
     }
 
