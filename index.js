@@ -14,7 +14,7 @@ const options = () => {
         borderWidth: Math.random() * 15,
         cornerSize: Math.random() * 50,
         entete: "lol",
-        maximizeTriggerArea: 15,
+        maximizeTriggerArea: 50,
     };
 };
 

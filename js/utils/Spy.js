@@ -20,7 +20,7 @@ export function spy(obj, methods, callback) {
     return Spy;
 }
 
-export function binder(obj, methods, callbacks, callOriginal = false) {
+export function binder(obj, methods, callbacks, callOriginal = false, callOriginalFirst = false) {
     const meths = [methods].flat();
     const cbs = [callbacks].flat();
 
@@ -28,8 +28,14 @@ export function binder(obj, methods, callbacks, callOriginal = false) {
         const og = obj[meth];
         obj[meth] = function () {
             const args = [].slice.apply(arguments);
-            cbs.forEach((cb) => cb(...args));
-            if (callOriginal) og.call(obj, ...args);
+            if (callOriginal && callOriginalFirst) {
+                og.call(obj, ...args);
+                cbs.forEach((cb) => cb(...args));
+            } else {
+                cbs.forEach((cb) => cb(...args));
+                if (callOriginal) og.call(obj, ...args);
+            }
+            
         };
     }
 }

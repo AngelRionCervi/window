@@ -72,7 +72,23 @@ export default class _Window {
             this.height = this.postMinimizedHeight;
         }
         this.updatePosAndShape();
-        this.emitter.emit('minimizedToggle', this.minimized);
+        this.emitter.emit("minimizedToggle", this.minimized);
+    }
+
+    checkMaximize(evt) {
+        for (const key in this.maximizeSides) {
+            this.maximizeSides[key] = false;
+        }
+
+        if (evt.clientX < this.maximizeTriggerArea) {
+            this.maximizeSides.left = true;
+        } else if (evt.clientX > window.innerWidth - this.maximizeTriggerArea) {
+            this.maximizeSides.right = true;
+        } else if (evt.clientY < this.maximizeTriggerArea) {
+            this.maximizeSides.top = true;
+        }
+
+       
     }
 
     maximize() {
@@ -118,43 +134,27 @@ export default class _Window {
 
         this.maximized = true;
         this.maximizedData = maxProps;
-        this.emitter.emit('maximizedToggle', maxProps);
+        this.emitter.emit("maximizedToggle", maxProps);
         this.updatePosAndShape();
     }
 
     removeEl() {
         this.winEl.remove();
-        this.emitter.emit('remove');
+        this.emitter.emit("remove");
     }
 
     focus(evt = null) {
         if (!evt) return;
         this.selected = true;
         this.windowClickPos = _mouse.getCursorPos(this.winEl, evt);
-        this.emitter.emit('focus');
+        this.emitter.emit("focus");
     }
 
     release(evt) {
         this.selected = false;
 
-        for (const key in this.maximizeSides) {
-            this.maximizeSides[key] = false;
-        }
-
-        if (evt.clientX < this.maximizeTriggerArea) {
-            this.maximizeSides.left = true;
-        } else if (evt.clientX > window.innerWidth - this.maximizeTriggerArea) {
-            this.maximizeSides.right = true;
-        }
-        if (evt.clientY < this.maximizeTriggerArea) {
-            this.maximizeSides.top = true;
-        }
-
-        this.emitter.emit('release');
-
-        if (Object.values(this.maximizeSides).some((el) => el)) {
-            this.maximize();
-        }
+        this.emitter.emit("release", evt);
+        if (Object.values(this.maximizeSides).some((el) => el)) this.maximize();
     }
 
     drag(evt) {
@@ -179,8 +179,9 @@ export default class _Window {
         this.x = evt.clientX - this.windowClickPos.x;
         this.y = evt.clientY - this.windowClickPos.y;
 
+        this.checkMaximize(evt);
         this.updatePosAndShape();
-        this.emitter.emit('drag');
+        this.emitter.emit("drag", evt);
     }
 
     updatePosAndShape() {
@@ -196,13 +197,13 @@ export default class _Window {
         this.preResizeWidth = this.width;
         this.preResizeHeight = this.height;
         this.borderSelected = evt.target.getAttribute("data-resize");
-        this.emitter.emit('borderSelected');
+        this.emitter.emit("borderSelected");
     }
 
-    borderLeave() {
+    borderLeave(evt) {
         this.resizeStart = null;
         this.borderSelected = null;
-        this.emitter.emit('borderReleased');
+        this.emitter.emit("borderReleased", evt);
     }
 
     resize(evt) {
@@ -246,7 +247,7 @@ export default class _Window {
         }
 
         this.maximized = false;
-        this.emitter.emit('resize', dirStrings);
+        this.emitter.emit("resize", dirStrings);
         this.updatePosAndShape();
     }
 
@@ -268,5 +269,17 @@ export default class _Window {
 
     getEl() {
         return this.winEl;
+    }
+
+    getMaximizeSide() {
+        return Object.keys(this.maximizeSides).find((key) => this.maximizeSides[key]);
+    }
+
+    getZindex() {
+        return this.winEl.style.zIndex;
+    }
+
+    setZindex(zIndex) {
+        this.winEl.style.zIndex = zIndex;
     }
 }

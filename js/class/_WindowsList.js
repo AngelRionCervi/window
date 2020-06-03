@@ -36,10 +36,11 @@ class _WindowList {
     }
 
     add(win) {
-        binder(win, "removeEl", this.removeOfList.bind(this, win.getID()), true);
-        binder(win, "focus", this.changeFocus.bind(this, win.getID()), true);
+        binder(win, "removeEl", () => this.removeOfList(win.getID()), true);
+        binder(win, "focus", () => this.changeFocus(win.getID()), true);
+        binder(win, "checkMaximize", () => this.maxPreview.preview(win.getMaximizeSide(), win.getZindex()), true, true);
+        binder(win, "release", () => this.maxPreview.removePreview(), true);
         win.create();
-        win.emitter.on("resize", console.log)
         this.list.push(win);
         this.initZindex(win.getID());
     }
