@@ -13,7 +13,7 @@ export default class _Window {
         this.mousePosOnBorder = null;
         this.windowClickPos = { x: 0, y: 0 };
         this.winEl = null;
-        this.id = "_" + Math.random();
+        this.id = "_" + Math.random().toString(36).substr(2, 16);
         this.minimized = false;
         this.maximized = false;
         this.elements = {};
@@ -87,8 +87,6 @@ export default class _Window {
         } else if (evt.clientY < this.maximizeTriggerArea) {
             this.maximizeSides.top = true;
         }
-
-       
     }
 
     maximize() {
@@ -133,6 +131,7 @@ export default class _Window {
         this.height = maxProps.height;
 
         this.maximized = true;
+        this.minimized = false;
         this.maximizedData = maxProps;
         this.emitter.emit("maximizedToggle", maxProps);
         this.updatePosAndShape();
@@ -160,7 +159,7 @@ export default class _Window {
     drag(evt) {
         if (!this.selected || !this.windowClickPos) return;
 
-        if (this.maximized) {
+        if (this.maximized && !this.minimized) {
             this.width = this.preMaximizedWidth;
             this.height = this.preMaximizedHeight;
             this.windowClickPos.x *= this.preMaximizedWidth / this.maximizedData.width; // new click is at the rario of the maximized window / by the pre maximized width

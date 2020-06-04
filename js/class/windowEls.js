@@ -257,5 +257,6 @@ export const windowEls = (_this, listeners, options) =>
                     ],
                     listeners.containerMouseDownListener
                 )
+                .addInlineStyle({ position: "absolute" })
                 .done())();
     })();
