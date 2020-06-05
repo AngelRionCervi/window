@@ -1,7 +1,7 @@
 import { DomBuilder } from "../utils/DomBuilder.js";
 const dob = new DomBuilder();
 
-export class _MaximizedPreview {
+export default class _MaximizedPreview {
     constructor() {
         this.previewingSide = null;
         this.previewEl = null;
@@ -11,16 +11,24 @@ export class _MaximizedPreview {
         };
         this.keyFrames = {
             top: [
-                { width: 0, height: 0, right: window.innerWidth / 2 + "px" },
+                {
+                    width: window.innerWidth / 1.5 + "px",
+                    height: window.innerHeight / 1.5 + "px",
+                    right: window.innerWidth / 2 - window.innerWidth / 1.5 / 2 + "px",
+                },
                 { right: 0, width: window.innerWidth + "px", height: window.innerHeight + "px" },
             ],
             side: [
-                { width: 0, height: 0, top: window.innerHeight / 2 + "px" },
+                {
+                    width: window.innerWidth / 3 + "px",
+                    height: window.innerWidth / 3 + "px",
+                    top: window.innerHeight / 2 - window.innerWidth / 3 / 2 + "px",
+                },
                 { top: 0, width: window.innerWidth / 2 + "px", height: window.innerHeight + "px" },
             ],
         };
         this.timing = {
-            duration: 200,
+            duration: 100,
             fill: "forwards",
         };
     }

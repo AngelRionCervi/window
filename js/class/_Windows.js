@@ -1,5 +1,6 @@
 import { binder } from "../utils/Spy.js";
-import { _MaximizedPreview } from "./_MaximizedPreview.js";
+import _MaximizedPreview  from "./_MaximizedPreview.js";
+import _Window from "./_Window.js";
 
 class _WindowList {
     constructor() {
@@ -35,7 +36,8 @@ class _WindowList {
         return this.list.sort((a, b) => Number(b.getEl().style.zIndex) - Number(a.getEl().style.zIndex))[0];
     }
 
-    add(win) {
+    add(options) {
+        const win = new _Window(options);
         binder(win, "removeEl", () => this.removeOfList(win.getID()), true);
         binder(win, "focus", () => this.changeFocus(win.getID()), true);
         binder(win, "checkMaximize", () => this.maxPreview.preview(win.getMaximizeSide(), win.getZindex()), true, true);

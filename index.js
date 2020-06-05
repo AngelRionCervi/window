@@ -1,5 +1,5 @@
-import _WindowsList from "./js/class/_WindowsList.js";
-import _Window from "./js/class/_Window.js";
+import _Windows from "./js/class/_Windows.js";
+
 //import _BorderListener from "./js/utils/BorderListener.js";
 
 const options = () => {
@@ -18,12 +18,12 @@ const options = () => {
     };
 };
 
-_WindowsList.add(new _Window(options()));
-_WindowsList.add(new _Window(options()));
-_WindowsList.add(new _Window(options()));
-_WindowsList.add(new _Window(options()));
-_WindowsList.add(new _Window(options()));
-_WindowsList.add(new _Window(options()));
+_Windows.add(options());
+_Windows.add(options());
+_Windows.add(options());
+_Windows.add(options());
+_Windows.add(options());
+_Windows.add(options());
 
 /* win2 */
 /*
