@@ -23,6 +23,7 @@ export default class _Window {
         this.preMaximizedHeight = null;
         this.maximizedData = null;
         this.maximizeSides = { left: null, right: null, top: null };
+        this.disablePreview = false;
         this.content = content;
         this.emitter = new Emitter();
         // user decides
@@ -37,6 +38,7 @@ export default class _Window {
         this.x = options.x || 100;
         this.y = options.y || 100;
         this.maximizeTriggerArea = options.maximizeTriggerArea || 12;
+        this.nextMaximizeDelay = options.nextMaximizeDelay || 1500;
     }
 
     build() {
@@ -82,9 +84,8 @@ export default class _Window {
     }
 
     checkMaximize(evt) {
-        for (const key in this.maximizeSides) {
-            this.maximizeSides[key] = false;
-        }
+        this.resetMaximizedSides();
+        if (this.disablePreview) return;
 
         if (evt.clientX < this.maximizeTriggerArea) {
             this.maximizeSides.left = true;
@@ -96,7 +97,6 @@ export default class _Window {
     }
 
     maximizeTrigger(evt) {
-        console.log(evt.target, this.elements.minimizeBtn)
         if (evt.target.isSameNode(this.elements.minimizeBtn)) return;
         if (this.maximizeSides.top) {
             this.resetWin();
@@ -199,6 +199,11 @@ export default class _Window {
             } else if (this.windowClickPos.x >= this.width - this.borderWidth) {
                 this.windowClickPos.x = this.width - this.borderWidth - 1;
             }
+
+            this.disablePreview = true;
+            setTimeout(() => {
+                this.disablePreview = false;
+            }, this.nextMaximizeDelay)
 
             this.maximized = false;
             this.maximizedData = null;
