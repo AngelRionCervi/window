@@ -213,24 +213,39 @@ export const windowEls = (_this, listeners, options) =>
         this.maximizeBtn = (() =>
             dob.createNode("button", "win-maximize-btn", null, "/", listeners.maximizeBtnListener).done())();
         this.enteteContainer = (() => dob.createNode("div", "win-entete", null, _this.entete).done())();
-        this.body = (() => dob.createNode("div", "win2-body", null).addInlineStyle({ overflow: "hidden" }).done())();
+        this.body = (() =>
+            dob
+                .createNode("div", "win2-body", null)
+                .addInlineStyle({
+                    overflow: "hidden",
+                    height: `calc(100% - ${options.headerHeight === "autopx" ? "0px" : options.headerHeight})`,
+                })
+                .done())();
         this.header = (() => {
             return dob
                 .createNode(
                     "div",
                     "win2-header",
                     null,
-                    [this.enteteContainer, dob.enclose([this.minimizeBtn, this.maximizeBtn, this.escapeBtn], "win-btn-container").done()],
+                    [
+                        this.enteteContainer,
+                        dob.enclose([this.minimizeBtn, this.maximizeBtn, this.escapeBtn], "win-btn-container").done(),
+                    ],
                     [listeners.headerMouseDownListener, listeners.headerDblClickListener]
                 )
+                .addInlineStyle({
+                    display: "flex",
+                    justifyContent: "space-between",
+                    height: options.headerHeight
+                })
                 .done();
         })();
         this.windowContent = (() =>
             dob
                 .createNode("div", "win2-content", null, [this.header, this.body])
                 .addInlineStyle({
-                    display: "grid",
-                    gridTemplateRows: `${options.headerHeight} auto`,
+                    display: "flex",
+                    flexDirection: "column",
                     position: "absolute",
                     left: options.borderWidth,
                     top: options.borderWidth,

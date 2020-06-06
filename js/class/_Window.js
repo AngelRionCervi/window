@@ -27,18 +27,18 @@ export default class _Window {
         this.content = content;
         this.emitter = new Emitter();
         // user decides
-        this.borderWidth = options.borderWidth || 20;
-        this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 60 + this.borderWidth * 2;
-        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : 30 + this.borderWidth;
+        this.borderWidth = options.borderWidth || 5;
+        this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 100 + this.borderWidth * 2;
+        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : "auto" /*25 + this.borderWidth*/;
         this.cornerSize = options.cornerSize || 16;
         this.enableGesture = options.gesture === true;
         this.entete = options.entete || "";
-        this.width = options.width || 100;
-        this.height = options.height + this.headerHeight || 100;
+        this.width = options.width || 200;
+        this.height = options.height || 200;
         this.x = options.x || 100;
         this.y = options.y || 100;
         this.maximizeTriggerArea = options.maximizeTriggerArea || 12;
-        this.nextMaximizeDelay = options.nextMaximizeDelay || 1500;
+        this.nextMaximizeDelay = options.nextMaximizeDelay || 500;
     }
 
     build() {
@@ -67,6 +67,9 @@ export default class _Window {
         this.winEl = this.elements.windowEl;
         this.updatePosAndShape();
         document.body.appendChild(this.winEl);
+        if (this.headerHeight === "auto") {
+            this.headerHeight = this.elements.header.offsetHeight + this.borderWidth;
+        }
     }
 
     minimize() {
@@ -85,7 +88,7 @@ export default class _Window {
 
     checkMaximize(evt) {
         this.resetMaximizedSides();
-        if (this.disablePreview) return;
+        if (this.disablePreview || !this.enableGesture) return;
 
         if (evt.clientX < this.maximizeTriggerArea) {
             this.maximizeSides.left = true;
