@@ -65,6 +65,8 @@ export default class _Window {
 
     minimize() {
         this.minimized = !this.minimized;
+        this.maximized = false;
+
         if (this.minimized) {
             this.postMinimizedHeight = this.height;
             this.height = this.headerHeight + this.borderWidth;
@@ -90,6 +92,7 @@ export default class _Window {
     }
 
     maximize() {
+        this.minimized = false;
         this.preMaximizedWidth = this.width;
         this.preMaximizedHeight = this.height;
 
@@ -131,7 +134,6 @@ export default class _Window {
         this.height = maxProps.height;
 
         this.maximized = true;
-        this.minimized = false;
         this.maximizedData = maxProps;
         this.emitter.emit("maximizedToggle", maxProps);
         this.updatePosAndShape();
@@ -151,8 +153,8 @@ export default class _Window {
 
     release(evt) {
         this.selected = false;
-
         this.emitter.emit("release", evt);
+        if (evt.target.tagName.toUpperCase() === "BUTTON") return;
         if (Object.values(this.maximizeSides).some((el) => el)) this.maximize();
     }
 
@@ -170,7 +172,7 @@ export default class _Window {
             } else if (this.windowClickPos.x >= this.width - this.borderWidth) {
                 this.windowClickPos.x = this.width - this.borderWidth - 1;
             }
-
+            
             this.maximized = false;
             this.maximizedData = null;
         }

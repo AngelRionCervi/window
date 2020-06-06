@@ -43,6 +43,7 @@ class _WindowList {
         binder(win, "checkMaximize", () => this.maxPreview.preview(win.getMaximizeSide(), win.getZindex()), true, true);
         binder(win, "release", () => this.maxPreview.removePreview(), true);
         win.create();
+        win.getEl()
         this.list.push(win);
         this.initZindex(win.getID());
     }

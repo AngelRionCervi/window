@@ -8,6 +8,7 @@ export default class _MaximizedPreview {
         this.previewStyle = {
             position: "absolute",
             boxShadow: "inset 0px 0px 0px 10px #f00",
+            background: "background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%)"
         };
         this.keyFrames = {
             top: [
