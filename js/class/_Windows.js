@@ -36,8 +36,8 @@ class _WindowList {
         return this.list.sort((a, b) => Number(b.getEl().style.zIndex) - Number(a.getEl().style.zIndex))[0];
     }
 
-    add(options) {
-        const win = new _Window(options);
+    add(options, content) {
+        const win = new _Window(options, content);
         binder(win, "removeEl", () => this.removeOfList(win.getID()), true);
         binder(win, "focus", () => this.changeFocus(win.getID()), true);
         binder(win, "checkMaximize", () => this.maxPreview.preview(win.getMaximizeSide(), win.getZindex()), true, true);

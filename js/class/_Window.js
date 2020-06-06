@@ -5,7 +5,7 @@ import { Emitter } from "../utils/Emitter.js";
 const _mouse = new Mouse();
 
 export default class _Window {
-    constructor(options, node) {
+    constructor(options, content) {
         this.postMinimizedHeight = null;
         this.selected = false;
         this.borderSelected = null;
@@ -23,6 +23,7 @@ export default class _Window {
         this.preMaximizedHeight = null;
         this.maximizedData = null;
         this.maximizeSides = { left: null, right: null, top: null };
+        this.content = content;
         this.emitter = new Emitter();
         // user decides
         this.borderWidth = options.borderWidth || 20;
@@ -42,7 +43,9 @@ export default class _Window {
         const listeners = {
             escapeBtnListener: { type: "click", callback: this.removeEl.bind(this) },
             minimizeBtnListener: { type: "click", callback: this.minimize.bind(this) },
+            maximizeBtnListener: { type: "click", callback: this.maximizeTrigger.bind(this) },
             headerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this) },
+            headerDblClickListener: { type: "dblclick", callback: this.maximizeTrigger.bind(this) },
             containerMouseDownListener: { type: "mousedown", callback: this.focus.bind(this, null) },
             borders: { type: "mousedown", callback: this.borderSelect.bind(this) },
         };
@@ -58,6 +61,7 @@ export default class _Window {
 
     create() {
         this.elements = this.build();
+        this.elements.body.appendChild(this.content);
         this.winEl = this.elements.windowEl;
         this.updatePosAndShape();
         document.body.appendChild(this.winEl);
@@ -89,6 +93,29 @@ export default class _Window {
         } else if (evt.clientY < this.maximizeTriggerArea) {
             this.maximizeSides.top = true;
         }
+    }
+
+    maximizeTrigger(evt) {
+        console.log(evt.target, this.elements.minimizeBtn)
+        if (evt.target.isSameNode(this.elements.minimizeBtn)) return;
+        if (this.maximizeSides.top) {
+            this.resetWin();
+            return;
+        }
+        this.maximizeSides.top = true;
+        this.maximize();
+    }
+
+    resetWin() {
+        this.resetMaximizedSides()
+        this.minimized = false;
+        this.maximized = false;
+
+        this.width = window.innerWidth / 2;
+        this.height = window.innerHeight / 2;
+        this.x = window.innerWidth / 4;
+        this.y = window.innerHeight / 4;
+        this.updatePosAndShape();
     }
 
     maximize() {
@@ -153,9 +180,9 @@ export default class _Window {
 
     release(evt) {
         this.selected = false;
-        this.emitter.emit("release", evt);
         if (evt.target.tagName.toUpperCase() === "BUTTON") return;
         if (Object.values(this.maximizeSides).some((el) => el)) this.maximize();
+        this.emitter.emit("release", evt);
     }
 
     drag(evt) {
@@ -172,7 +199,7 @@ export default class _Window {
             } else if (this.windowClickPos.x >= this.width - this.borderWidth) {
                 this.windowClickPos.x = this.width - this.borderWidth - 1;
             }
-            
+
             this.maximized = false;
             this.maximizedData = null;
         }
@@ -274,6 +301,10 @@ export default class _Window {
 
     getMaximizeSide() {
         return Object.keys(this.maximizeSides).find((key) => this.maximizeSides[key]);
+    }
+
+    resetMaximizedSides() {
+        for (const key in this.maximizeSides) this.maximizeSides[key] = false;
     }
 
     getZindex() {

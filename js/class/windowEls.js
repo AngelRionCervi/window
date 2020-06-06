@@ -206,22 +206,22 @@ export const windowEls = (_this, listeners, options) =>
                 )
                 .done();
         })();
-
         this.escapeBtn = (() =>
             dob.createNode("button", "win-escape-btn", null, "x", listeners.escapeBtnListener).done())();
         this.minimizeBtn = (() =>
             dob.createNode("button", "win-minimize-btn", null, "v", listeners.minimizeBtnListener).done())();
-
+        this.maximizeBtn = (() =>
+            dob.createNode("button", "win-maximize-btn", null, "/", listeners.maximizeBtnListener).done())();
         this.enteteContainer = (() => dob.createNode("div", "win-entete", null, _this.entete).done())();
-        this.body = (() => dob.createNode("div", "win2-body", null).done())();
+        this.body = (() => dob.createNode("div", "win2-body", null).addInlineStyle({ overflow: "hidden" }).done())();
         this.header = (() => {
             return dob
                 .createNode(
                     "div",
                     "win2-header",
                     null,
-                    [this.enteteContainer, dob.enclose([this.escapeBtn, this.minimizeBtn], "win-btn-container").done()],
-                    listeners.headerMouseDownListener
+                    [this.enteteContainer, dob.enclose([this.minimizeBtn, this.maximizeBtn, this.escapeBtn], "win-btn-container").done()],
+                    [listeners.headerMouseDownListener, listeners.headerDblClickListener]
                 )
                 .done();
         })();

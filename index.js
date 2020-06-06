@@ -18,14 +18,14 @@ const options = () => {
     };
 };
 
-_Windows.add(options());
-_Windows.add(options());
-_Windows.add(options());
-_Windows.add(options());
-_Windows.add(options());
-_Windows.add(options());
+const content = document.getElementById("win_content");
+console.log(content)
 
-/* win2 */
-/*
-const winParts = Array.from(document.querySelectorAll("[data-resize]"));
-const borderListener = new borderListener(winParts);*/
+_Windows.add(options(), content.cloneNode(true));
+_Windows.add(options(), content.cloneNode(true));
+_Windows.add(options(), content.cloneNode(true));
+_Windows.add(options(), content.cloneNode(true));
+_Windows.add(options(), content.cloneNode(true));
+_Windows.add(options(), content.cloneNode(true));
+
+
