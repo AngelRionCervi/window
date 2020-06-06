@@ -1,37 +1,80 @@
+@font-face {
+    font-family: "ms";
+    src: url(../tmp_assets/h.ttf);
+}
+
+* {
+    font-family: "ms";
+    font-size: 8px;
+}
+
 body {
     overflow: hidden;
 }
 
-
 /*win 2*/
 
 .win2-container {
-  
 }
 
 .win2-corner-hor {
-    background-color: red;
+    background-color: #bdbdbd;
 }
 
 .win2-corner-ver {
-    background-color: red;
+    background-color: #bdbdbd;
 }
 
 .win2-border {
-    background-color: blue;
+    background-color: #bdbdbd;
 }
 
-
-
 .win2-content {
-    
+}
+
+.win2-button {
+    position: relative;
+    top: 2px;
+    border: none;
+    width: 16px;
+    height: 14px;
+}
+
+.win2-entete-container > p {
+    color: white;
+    font-size: 8px;
+}
+
+.win2-minimize-btn {
+    background: url(../tmp_assets/minimize.png) no-repeat;
+}
+
+.win2-maximize-btn {
+    margin-right: 2px;
+    background: url(../tmp_assets/maximize.png) no-repeat;
+}
+
+.win2-escape-btn {
+    margin-right: 2px;
+    background: url(../tmp_assets/remove.png) no-repeat;
+}
+
+.win2-minimize-btn:active {
+    background: url(../tmp_assets/minimizeClick.png) no-repeat;
+}
+
+.win2-maximize-btn:active {
+    background: url(../tmp_assets/maximizeClick.png) no-repeat;
+}
+
+.win2-escape-btn:active {
+    background: url(../tmp_assets/removeClick.png) no-repeat;
 }
 
 .win2-header {
-    background-color: greenyellow;
+    background-color: #00007b;
 }
 
 .win2-body {
-    background-color: lightgray;
+    background-color: #bdbdbd;
 }
-

@@ -1,8 +1,29 @@
 import { DomBuilder } from "../utils/DomBuilder.js";
 const dob = new DomBuilder();
 
-export const windowEls = (_this, listeners, options) =>
-    new (function () {
+export const windowEls = (listeners, options) => {
+    let entete = options.entete;
+    if (options.enteteIcon) {
+        console.log(options.enteteIcon);
+        entete = dob
+            .enclose(
+                [
+                    dob
+                        .enclose(options.enteteIcon.cloneNode(true), "win2-icon-container")
+                        .addInlineStyle({ display: "inline", position: "relative", top: "2px", left: "2px" })
+                        .done(),
+                    dob
+                        .createNode("p", null, null, entete)
+                        .addInlineStyle({ margin: "0 5px 0 7px", display: "inline" })
+                        .done(),
+                ],
+                "win2-entete-container"
+            )
+            .done();
+        console.log(entete);
+    }
+
+    return new (function () {
         this.borderTop = (() =>
             dob
                 .createNode("div", "win2-border-top win2-border", null, null, listeners.borders, {
@@ -207,12 +228,37 @@ export const windowEls = (_this, listeners, options) =>
                 .done();
         })();
         this.escapeBtn = (() =>
-            dob.createNode("button", "win-escape-btn", null, "x", listeners.escapeBtnListener).done())();
+            dob
+                .createNode(
+                    "button",
+                    "win2-button win2-escape-btn",
+                    null,
+                    options.escapeBtnContent,
+                    listeners.escapeBtnListener
+                )
+                .done())();
         this.minimizeBtn = (() =>
-            dob.createNode("button", "win-minimize-btn", null, "v", listeners.minimizeBtnListener).done())();
+            dob
+                .createNode(
+                    "button",
+                    "win2-button win2-minimize-btn",
+                    null,
+                    options.minimizeBtnContent,
+                    listeners.minimizeBtnListener
+                )
+                .done())();
         this.maximizeBtn = (() =>
-            dob.createNode("button", "win-maximize-btn", null, "/", listeners.maximizeBtnListener).done())();
-        this.enteteContainer = (() => dob.createNode("div", "win-entete", null, _this.entete).done())();
+            dob
+                .createNode(
+                    "button",
+                    "win2-button win2-maximize-btn",
+                    null,
+                    options.maximizeBtnContent,
+                    listeners.maximizeBtnListener
+                )
+                .done())();
+        this.enteteContainer = (() =>
+            dob.createNode("div", "win2-entete", null, entete).addInlineStyle({ cursor: "default" }).done())();
         this.body = (() =>
             dob
                 .createNode("div", "win2-body", null)
@@ -229,14 +275,14 @@ export const windowEls = (_this, listeners, options) =>
                     null,
                     [
                         this.enteteContainer,
-                        dob.enclose([this.minimizeBtn, this.maximizeBtn, this.escapeBtn], "win-btn-container").done(),
+                        dob.enclose([this.minimizeBtn, this.maximizeBtn, this.escapeBtn], "win2-btn-container").done(),
                     ],
                     [listeners.headerMouseDownListener, listeners.headerDblClickListener]
                 )
                 .addInlineStyle({
                     display: "flex",
                     justifyContent: "space-between",
-                    height: options.headerHeight
+                    height: options.headerHeight,
                 })
                 .done();
         })();
@@ -275,3 +321,4 @@ export const windowEls = (_this, listeners, options) =>
                 .addInlineStyle({ position: "absolute" })
                 .done())();
     })();
+};

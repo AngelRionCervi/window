@@ -1,3 +1,7 @@
+function isElement(element) {
+    return element instanceof Element || element instanceof HTMLDocument;
+}
+
 export class DomBuilder {
     element = null;
 
@@ -23,7 +27,9 @@ export class DomBuilder {
                         this.element.innerText = content.toString();
                         break;
                     case "object":
-                        this.element.appendChild(content);
+                        if (isElement(content)) {
+                            this.element.appendChild(content);
+                        }
                         break;
                 }
             });
@@ -95,10 +101,15 @@ export class DomBuilder {
         return this.element;
     }
 
-    enclose(nodes, _class = null, tag = "div", listener = null, customAttrIn = null) {
+    enclose(_nodes, _class = null, tag = "div", listener = null, customAttrIn = null) {
         this.element = document.createElement(tag);
+        const nodes = [_nodes].flat();
 
-        for (const node of nodes) this.element.appendChild(node);
+        for (const node of nodes) {
+            if (isElement(node)) {
+                this.element.appendChild(node);
+            } 
+        }
         if (customAttrIn) {
             nodes.forEach((node) => {
                 this.addCustomAttr(customAttrIn, node);

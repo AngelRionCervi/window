@@ -27,18 +27,22 @@ export default class _Window {
         this.content = content;
         this.emitter = new Emitter();
         // user decides
-        this.borderWidth = options.borderWidth || 5;
+        this.borderWidth = options.borderWidth || 3;
         this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 100 + this.borderWidth * 2;
-        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : "auto" /*25 + this.borderWidth*/;
+        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : "auto";
         this.cornerSize = options.cornerSize || 16;
         this.enableGesture = options.gesture === true;
         this.entete = options.entete || "";
+        this.enteteIcon = options.enteteIcon || false;
         this.width = options.width || 200;
         this.height = options.height || 200;
         this.x = options.x || 100;
         this.y = options.y || 100;
         this.maximizeTriggerArea = options.maximizeTriggerArea || 12;
         this.nextMaximizeDelay = options.nextMaximizeDelay || 500;
+        this.minimizeBtnContent = options.minimizeBtnContent || "";
+        this.maximizeBtnContent = options.maximizeBtnContent || "";
+        this.escapeBtnContent = options.escapeBtnContent || "";
     }
 
     build() {
@@ -56,9 +60,14 @@ export default class _Window {
             borderWidth: `${this.borderWidth}px`,
             cornerSize: `${this.cornerSize}px`,
             headerHeight: `${this.headerHeight}px`,
+            minimizeBtnContent: this.minimizeBtnContent,
+            maximizeBtnContent: this.maximizeBtnContent,
+            escapeBtnContent: this.escapeBtnContent,
+            entete: this.entete,
+            enteteIcon: this.enteteIcon,
         };
 
-        return windowEls(this, listeners, options);
+        return windowEls(listeners, options);
     }
 
     create() {
