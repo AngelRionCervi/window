@@ -45,7 +45,7 @@ export const windowEls = (listeners, options) => {
                 .enclose(
                     [
                         dob
-                            .createNode("div", "win2-corner-hor")
+                            .createNode("div", "win2-corner-top-right win2-corner-hor")
                             .addInlineStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
@@ -56,7 +56,7 @@ export const windowEls = (listeners, options) => {
                             })
                             .done(),
                         dob
-                            .createNode("div", "win2-corner-ver")
+                            .createNode("div", "win2-corner-top-right win2-corner-ver")
                             .addInlineStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
@@ -96,7 +96,7 @@ export const windowEls = (listeners, options) => {
                 .enclose(
                     [
                         dob
-                            .createNode("div", "win2-corner-hor")
+                            .createNode("div", "win2-corner-top-left win2-corner-hor")
                             .addInlineStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
@@ -107,7 +107,7 @@ export const windowEls = (listeners, options) => {
                             })
                             .done(),
                         dob
-                            .createNode("div", "win2-corner-ver")
+                            .createNode("div", "win2-corner-top-left win2-corner-ver")
                             .addInlineStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
@@ -147,7 +147,7 @@ export const windowEls = (listeners, options) => {
                 .enclose(
                     [
                         dob
-                            .createNode("div", "win2-corner-hor")
+                            .createNode("div", "win2-corner-bottom-right win2-corner-hor")
                             .addInlineStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
@@ -158,7 +158,7 @@ export const windowEls = (listeners, options) => {
                             })
                             .done(),
                         dob
-                            .createNode("div", "win2-corner-ver")
+                            .createNode("div", "win2-corner-bottom-right win2-corner-ver")
                             .addInlineStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
@@ -198,7 +198,7 @@ export const windowEls = (listeners, options) => {
                 .enclose(
                     [
                         dob
-                            .createNode("div", "win2-corner-hor")
+                            .createNode("div", "win2-corner-bottom-left win2-corner-hor")
                             .addInlineStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
@@ -209,7 +209,7 @@ export const windowEls = (listeners, options) => {
                             })
                             .done(),
                         dob
-                            .createNode("div", "win2-corner-ver")
+                            .createNode("div", "win2-corner-bottom-left win2-corner-ver")
                             .addInlineStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,

@@ -19,7 +19,7 @@ enteteIconImage.onload = function () {
             //minWidth: 75,
             //borderWidth: 5,
             //cornerSize: 10,
-            entete: "la super fenetre lol",
+            entete: "tha old window eh ?",
             //maximizeTriggerArea: 15,
         };
     };

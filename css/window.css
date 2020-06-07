@@ -10,6 +10,7 @@
 
 body {
     overflow: hidden;
+    background-color: #008181;
 }
 
 /*win 2*/
@@ -27,6 +28,60 @@ body {
 
 .win2-border {
     background-color: #bdbdbd;
+}
+
+.win2-border-bottom {
+
+}
+
+.win2-border-left {
+    background-color: white;
+}
+
+.win2-border-top {
+    background-color: white;
+}
+
+.win2-border-bottom {
+    background: rgb(128,128,128);
+    background: linear-gradient(180deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-border-right {
+    background: rgb(128,128,128);
+    background: linear-gradient(90deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-corner-top-right.win2-corner-ver {
+    background: rgb(128,128,128);
+    background: linear-gradient(90deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-corner-bottom-left.win2-corner-hor {
+    background: rgb(128,128,128);
+    background: linear-gradient(180deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-corner-bottom-right.win2-corner-hor {
+    background: rgb(128,128,128);
+    background: linear-gradient(180deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-corner-bottom-right.win2-corner-ver {
+    background: rgb(128,128,128);
+    background: linear-gradient(90deg, rgba(128,128,128,1) 56%, rgba(0,0,0,1) 89%);
+}
+
+.win2-corner-top-left {
+    background-color: white;
+}
+
+.win2-corner-bottom-left.win2-corner-ver {
+    background-color: white;
+}
+
+.win2-corner-top-right.win2-corner-hor {
+    background-color: white;
 }
 
 .win2-content {
