@@ -1,5 +1,6 @@
 import { binder } from "../utils/Spy.js";
-import _MaximizedPreview  from "./_MaximizedPreview.js";
+import { Emitter } from "../utils/Emitter.js";
+import _MaximizedPreview from "./_MaximizedPreview.js";
 import _Window from "./_Window.js";
 
 class _WindowList {
@@ -10,6 +11,18 @@ class _WindowList {
         this.maxPreview = new _MaximizedPreview();
         document.addEventListener("mousemove", this.targetDrag.bind(this));
         document.addEventListener("mouseup", this.deselect.bind(this));
+        this.emitter = new Emitter();
+        this.eventTypes = [
+            "minimizeToggle",
+            "maximizeToggle",
+            "remove",
+            "focus",
+            "drag",
+            "release",
+            "borderSelect",
+            "borderRelease",
+            "resize",
+        ];
     }
 
     getWinByID(id) {
@@ -25,7 +38,7 @@ class _WindowList {
     }
 
     getBorderSelectedWin() {
-        return this.list.find((el) => el.isBorderSelected()); 
+        return this.list.find((el) => el.isBorderSelected());
     }
 
     getWinByZindex(zIndex) {
@@ -36,6 +49,16 @@ class _WindowList {
         return this.list.sort((a, b) => Number(b.getEl().style.zIndex) - Number(a.getEl().style.zIndex))[0];
     }
 
+    getAllWin() {
+        return this.list;
+    }
+
+    closeAllWin() {
+        for (let u = this.list.length - 1; u >= 0; u--) {
+            this.list[u].removeEl();
+        }
+    }
+
     add(options, content) {
         const win = new _Window(options, content);
         binder(win, "removeEl", () => this.removeOfList(win.getID()), true);
@@ -43,9 +66,16 @@ class _WindowList {
         binder(win, "checkMaximize", () => this.maxPreview.preview(win.getMaximizeSide(), win.getZindex()), true, true);
         binder(win, "release", () => this.maxPreview.removePreview(), true);
         win.create();
-        win.getEl()
+        win.getEl();
         this.list.push(win);
         this.initZindex(win.getID());
+        this.startListening(win);
+    }
+
+    startListening(win) {
+        this.eventTypes.map((type) => {
+            win.emitter.on(type, ({ detail }) => this.emitter.emit(type, { id: win.id, payload: detail }));
+        });
     }
 
     removeOfList(id) {
@@ -88,10 +118,12 @@ class _WindowList {
             .filter((el) => el.id !== id && el.id !== winToReplace.getID())
             .sort((b, a) => Number(a.getEl().style.zIndex) - Number(b.getEl().style.zIndex));
 
-        otherWins.forEach((win, listIndex, wins) => { // loopy loop
+        otherWins.forEach((win, listIndex, wins) => {
+            // loopy loop
             const el = win.getEl();
             const zIndex = Number(el.style.zIndex);
-            if (zIndex === totalZI - 1) { // look mom im high
+            if (zIndex === totalZI - 1) {
+                // look mom im high
                 for (let u = listIndex; u < wins.length - listIndex; u++) {
                     const restEl = wins[u].getEl();
                     const restZindex = Number(restEl.style.zIndex);
@@ -106,9 +138,7 @@ class _WindowList {
     initZindex(id) {
         const win = this.getWinByID(id);
         win.getEl().style.zIndex = this.list.length + this.startingZI;
-        //console.log(this.list.map((el) => el.getEl().style.zIndex));
     }
-
 }
 
 export default new _WindowList();

@@ -2,25 +2,28 @@ import { DomBuilder } from "../utils/DomBuilder.js";
 const dob = new DomBuilder();
 
 export const windowEls = (listeners, options) => {
-    let entete = options.entete;
+    let entete = null;
     if (options.enteteIcon) {
-        console.log(options.enteteIcon);
         entete = dob
             .enclose(
                 [
                     dob
                         .enclose(options.enteteIcon.cloneNode(true), "win2-icon-container")
-                        .addInlineStyle({ display: "inline", position: "relative", top: "2px", left: "2px" })
+                        .addStyle({ display: "inline", position: "relative", top: "2px", left: "2px" })
                         .done(),
                     dob
-                        .createNode("p", null, null, entete)
-                        .addInlineStyle({ margin: "0 5px 0 7px", display: "inline" })
+                        .createNode("p", null, null, options.entete.toString())
+                        .addStyle({ margin: "0 5px 0 7px", display: "inline" })
                         .done(),
                 ],
                 "win2-entete-container"
             )
             .done();
-        console.log(entete);
+    } else {
+        entete = dob
+            .createNode("p", null, null, options.entete.toString())
+            .addStyle({ margin: "0 5px 0 7px", display: "inline" })
+            .done();
     }
 
     return new (function () {
@@ -30,13 +33,14 @@ export const windowEls = (listeners, options) => {
                     type: "data-resize",
                     val: "top",
                 })
-                .addInlineStyle({
+                .addStyle({
                     top: 0,
                     left: options.cornerSize,
                     width: `calc(100% - ${options.cornerSize} * 2)`,
                     height: options.borderWidth,
                     cursor: "ns-resize",
                     position: "absolute",
+                    backgroundColor: "lightgrey",
                 })
                 .done())();
 
@@ -46,24 +50,26 @@ export const windowEls = (listeners, options) => {
                     [
                         dob
                             .createNode("div", "win2-corner-top-right win2-corner-hor")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
                                 top: 0,
                                 right: 0,
                                 position: "absolute",
                                 cursor: "nesw-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                         dob
                             .createNode("div", "win2-corner-top-right win2-corner-ver")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
                                 top: 0,
                                 right: 0,
                                 position: "absolute",
                                 cursor: "nesw-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                     ],
@@ -81,13 +87,14 @@ export const windowEls = (listeners, options) => {
                     type: "data-resize",
                     val: "right",
                 })
-                .addInlineStyle({
+                .addStyle({
                     top: options.cornerSize,
                     right: 0,
                     width: options.borderWidth,
                     height: `calc(100% - ${options.cornerSize} * 2)`,
                     cursor: "ew-resize",
                     position: "absolute",
+                    backgroundColor: "lightgrey",
                 })
                 .done())();
 
@@ -97,24 +104,26 @@ export const windowEls = (listeners, options) => {
                     [
                         dob
                             .createNode("div", "win2-corner-top-left win2-corner-hor")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
                                 top: 0,
                                 left: 0,
                                 position: "absolute",
                                 cursor: "nwse-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                         dob
                             .createNode("div", "win2-corner-top-left win2-corner-ver")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
                                 top: 0,
                                 left: 0,
                                 position: "absolute",
                                 cursor: "nwse-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                     ],
@@ -132,13 +141,14 @@ export const windowEls = (listeners, options) => {
                     type: "data-resize",
                     val: "bottom",
                 })
-                .addInlineStyle({
+                .addStyle({
                     bottom: 0,
                     left: options.cornerSize,
                     width: `calc(100% - ${options.cornerSize} * 2)`,
                     height: options.borderWidth,
                     cursor: "ns-resize",
                     position: "absolute",
+                    backgroundColor: "lightgrey",
                 })
                 .done())();
 
@@ -148,24 +158,26 @@ export const windowEls = (listeners, options) => {
                     [
                         dob
                             .createNode("div", "win2-corner-bottom-right win2-corner-hor")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
                                 bottom: 0,
                                 right: 0,
                                 position: "absolute",
                                 cursor: "nwse-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                         dob
                             .createNode("div", "win2-corner-bottom-right win2-corner-ver")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
                                 bottom: 0,
                                 right: 0,
                                 position: "absolute",
                                 cursor: "nwse-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                     ],
@@ -183,13 +195,14 @@ export const windowEls = (listeners, options) => {
                     type: "data-resize",
                     val: "left",
                 })
-                .addInlineStyle({
+                .addStyle({
                     top: options.cornerSize,
                     left: 0,
                     width: options.borderWidth,
                     height: `calc(100% - ${options.cornerSize} * 2)`,
                     cursor: "ew-resize",
                     position: "absolute",
+                    backgroundColor: "lightgrey",
                 })
                 .done())();
 
@@ -199,24 +212,26 @@ export const windowEls = (listeners, options) => {
                     [
                         dob
                             .createNode("div", "win2-corner-bottom-left win2-corner-hor")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.cornerSize,
                                 height: options.borderWidth,
                                 bottom: 0,
                                 left: 0,
                                 position: "absolute",
                                 cursor: "nesw-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                         dob
                             .createNode("div", "win2-corner-bottom-left win2-corner-ver")
-                            .addInlineStyle({
+                            .addStyle({
                                 width: options.borderWidth,
                                 height: options.cornerSize,
                                 bottom: 0,
                                 left: 0,
                                 position: "absolute",
                                 cursor: "nesw-resize",
+                                backgroundColor: "lightgrey",
                             })
                             .done(),
                     ],
@@ -258,13 +273,14 @@ export const windowEls = (listeners, options) => {
                 )
                 .done())();
         this.enteteContainer = (() =>
-            dob.createNode("div", "win2-entete", null, entete).addInlineStyle({ cursor: "default" }).done())();
+            dob.createNode("div", "win2-entete", null, entete).addStyle({ cursor: "default" }).done())();
         this.body = (() =>
             dob
                 .createNode("div", "win2-body", null)
-                .addInlineStyle({
+                .addStyle({
                     overflow: "hidden",
                     height: `calc(100% - ${options.headerHeight === "autopx" ? "0px" : options.headerHeight})`,
+                    backgroundColor: "Bisque",
                 })
                 .done())();
         this.header = (() => {
@@ -279,17 +295,18 @@ export const windowEls = (listeners, options) => {
                     ],
                     [listeners.headerMouseDownListener, listeners.headerDblClickListener]
                 )
-                .addInlineStyle({
+                .addStyle({
                     display: "flex",
                     justifyContent: "space-between",
                     height: options.headerHeight,
+                    backgroundColor: "BurlyWood"
                 })
                 .done();
         })();
         this.windowContent = (() =>
             dob
                 .createNode("div", "win2-content", null, [this.header, this.body])
-                .addInlineStyle({
+                .addStyle({
                     display: "flex",
                     flexDirection: "column",
                     position: "absolute",
@@ -318,7 +335,7 @@ export const windowEls = (listeners, options) => {
                     ],
                     listeners.containerMouseDownListener
                 )
-                .addInlineStyle({ position: "absolute" })
+                .addStyle({ position: "absolute" })
                 .done())();
     })();
 };

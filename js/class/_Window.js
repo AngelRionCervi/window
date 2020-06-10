@@ -5,7 +5,7 @@ import { Emitter } from "../utils/Emitter.js";
 const _mouse = new Mouse();
 
 export default class _Window {
-    constructor(options, content) {
+    constructor(options = null, content = null) {
         this.postMinimizedHeight = null;
         this.selected = false;
         this.borderSelected = null;
@@ -27,22 +27,23 @@ export default class _Window {
         this.content = content;
         this.emitter = new Emitter();
         // user decides
-        this.borderWidth = options.borderWidth || 3;
-        this.minWidth = options.minWidth ? options.minWidth + this.borderWidth * 2 : 100 + this.borderWidth * 2;
-        this.headerHeight = options.headerHeight ? options.headerHeight + this.borderWidth : "auto";
-        this.cornerSize = options.cornerSize || 16;
-        this.enableGesture = options.gesture === true;
-        this.entete = options.entete || "";
-        this.enteteIcon = options.enteteIcon || false;
-        this.width = options.width || 200;
-        this.height = options.height || 200;
-        this.x = options.x || 100;
-        this.y = options.y || 100;
-        this.maximizeTriggerArea = options.maximizeTriggerArea || 12;
-        this.nextMaximizeDelay = options.nextMaximizeDelay || 500;
-        this.minimizeBtnContent = options.minimizeBtnContent || "";
-        this.maximizeBtnContent = options.maximizeBtnContent || "";
-        this.escapeBtnContent = options.escapeBtnContent || "";
+        this.name = options?.name || "default";
+        this.borderWidth = options?.borderWidth || 3;
+        this.minWidth = options?.minWidth ? options?.minWidth + this.borderWidth * 2 : 100 + this.borderWidth * 2;
+        this.headerHeight = options?.headerHeight ? options?.headerHeight + this.borderWidth : "auto";
+        this.cornerSize = options?.cornerSize || 16;
+        this.enableGesture = options?.gesture === true;
+        this.entete = options?.entete || "";
+        this.enteteIcon = options?.enteteIcon || false;
+        this.width = options?.width || 200;
+        this.height = options?.height || 200;
+        this.x = options?.x || 100;
+        this.y = options?.y || 100;
+        this.maximizeTriggerArea = options?.maximizeTriggerArea || 12;
+        this.nextMaximizeDelay = options?.nextMaximizeDelay || 500;
+        this.minimizeBtnContent = options?.minimizeBtnContent || "";
+        this.maximizeBtnContent = options?.maximizeBtnContent || "";
+        this.escapeBtnContent = options?.escapeBtnContent || "";
     }
 
     build() {
@@ -72,7 +73,7 @@ export default class _Window {
 
     create() {
         this.elements = this.build();
-        this.elements.body.appendChild(this.content);
+        if (this.content) this.elements.body.appendChild(this.content);
         this.winEl = this.elements.windowEl;
         this.updatePosAndShape();
         document.body.appendChild(this.winEl);
@@ -92,7 +93,7 @@ export default class _Window {
             this.height = this.postMinimizedHeight;
         }
         this.updatePosAndShape();
-        this.emitter.emit("minimizedToggle", this.minimized);
+        this.emitter.emit("minimizeToggle", this.minimized);
     }
 
     checkMaximize(evt) {
@@ -119,7 +120,7 @@ export default class _Window {
     }
 
     resetWin() {
-        this.resetMaximizedSides()
+        this.resetMaximizedSides();
         this.minimized = false;
         this.maximized = false;
 
@@ -174,20 +175,21 @@ export default class _Window {
 
         this.maximized = true;
         this.maximizedData = maxProps;
-        this.emitter.emit("maximizedToggle", maxProps);
+        this.emitter.emit("maximizeToggle", maxProps);
         this.updatePosAndShape();
     }
 
-    removeEl() {
+    removeEl(evt = null) {
+        console.log(this.winEl)
         this.winEl.remove();
-        this.emitter.emit("remove");
+        this.emitter.emit("remove", evt);
     }
 
     focus(evt = null) {
         if (!evt) return;
         this.selected = true;
         this.windowClickPos = _mouse.getCursorPos(this.winEl, evt);
-        this.emitter.emit("focus");
+        this.emitter.emit("focus", evt);
     }
 
     release(evt) {
@@ -215,7 +217,7 @@ export default class _Window {
             this.disablePreview = true;
             setTimeout(() => {
                 this.disablePreview = false;
-            }, this.nextMaximizeDelay)
+            }, this.nextMaximizeDelay);
 
             this.maximized = false;
             this.maximizedData = null;
@@ -242,13 +244,13 @@ export default class _Window {
         this.preResizeWidth = this.width;
         this.preResizeHeight = this.height;
         this.borderSelected = evt.target.getAttribute("data-resize");
-        this.emitter.emit("borderSelected");
+        this.emitter.emit("borderSelect", evt);
     }
 
     borderLeave(evt) {
         this.resizeStart = null;
         this.borderSelected = null;
-        this.emitter.emit("borderReleased", evt);
+        this.emitter.emit("borderRelease", evt);
     }
 
     resize(evt) {
@@ -330,5 +332,17 @@ export default class _Window {
 
     setZindex(zIndex) {
         this.winEl.style.zIndex = zIndex;
+    }
+
+    getCoord() {
+        return { x: this.x, y: this.y };
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
     }
 }

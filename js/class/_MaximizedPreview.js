@@ -7,8 +7,7 @@ export default class _MaximizedPreview {
         this.previewEl = null;
         this.previewStyle = {
             position: "absolute",
-            boxShadow: "inset 0px 0px 0px 10px #f00",
-            background: "background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%)"
+            boxShadow: "inset 0px 0px 0px 5px darkgrey",
         };
         this.keyFrames = {
             top: [
@@ -35,7 +34,7 @@ export default class _MaximizedPreview {
     }
 
     createPreviewNode() {
-        return dob.createNode("div", "win2-max-preview").addInlineStyle(this.previewStyle).done();
+        return dob.createNode("div", "win2-max-preview").addStyle(this.previewStyle).done();
     }
 
     preview(side, zIndex) {

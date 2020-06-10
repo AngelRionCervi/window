@@ -65,7 +65,7 @@ export class DomBuilder {
         return this;
     }
 
-    addInlineStyle(styles, node = null) {
+    addStyle(styles, node = null) {
         Object.keys(styles).forEach((key) => {
             const el = node ? node : this.element;
             el.style[key] = styles[key];
@@ -94,6 +94,18 @@ export class DomBuilder {
             }
             return false;
         });
+        return this;
+    }
+
+    fill(inner, node = null) {
+        const el = node ? node : this.element;
+        if (isElement(inner)) {
+            el.appendChild(inner)
+        } else {
+            const container = document.createElement("p");
+            container.innerHTML = inner;
+            el.appendChild(container);
+        }
         return this;
     }
 
