@@ -132,7 +132,6 @@ class _WindowList {
                 }
             }
         });
-        //console.log(this.list.map((el) => el.getEl().style.zIndex));
     }
 
     initZindex(id) {
@@ -141,4 +140,4 @@ class _WindowList {
     }
 }
 
-export default new _WindowList();
+export default _WindowList;

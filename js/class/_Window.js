@@ -180,7 +180,6 @@ export default class _Window {
     }
 
     removeEl(evt = null) {
-        console.log(this.winEl)
         this.winEl.remove();
         this.emitter.emit("remove", evt);
     }
