@@ -7,9 +7,11 @@
         <link href="css/window.css" rel="stylesheet" />
     </head>
     <body>
-        <script src="dist/justAnotherWin.min.js"></script>
+        <script src="dist/justAnotherWin.js"></script>
         <script>
-            justAnotherWin.add({ gesture: true });
+            const input = document.createElement("input")
+            input.style.zIndex = 99
+            justAnotherWin.add({ gesture: true, x: 0, y: 0 }, input);
             justAnotherWin.add({ gesture: true });
             justAnotherWin.add({ gesture: true });
             const wins = justAnotherWin.getAllWin();

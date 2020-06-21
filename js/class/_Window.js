@@ -37,8 +37,8 @@ export default class _Window {
         this.enteteIcon = options?.enteteIcon || false;
         this.width = options?.width || 200;
         this.height = options?.height || 200;
-        this.x = options?.x || 100;
-        this.y = options?.y || 100;
+        this.x = !isNaN(options?.x) ? options.x : 200;
+        this.y = !isNaN(options?.y) ? options.y : 200;
         this.maximizeTriggerArea = options?.maximizeTriggerArea || 12;
         this.nextMaximizeDelay = options?.nextMaximizeDelay || 500;
         this.minimizeBtnContent = options?.minimizeBtnContent || "";

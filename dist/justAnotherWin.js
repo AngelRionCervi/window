@@ -306,8 +306,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         if (!l.hasOwnProperty("args")) l.args = [];
         var el = node ? node : this.element;
         el.addEventListener(l.type, function (e) {
-          e.preventDefault();
-
           if (l.hasOwnProperty("event") && !l.event) {
             l.callback.apply(l, _toConsumableArray(l.args));
           } else {
@@ -789,8 +787,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       this.enteteIcon = (options === null || options === void 0 ? void 0 : options.enteteIcon) || false;
       this.width = (options === null || options === void 0 ? void 0 : options.width) || 200;
       this.height = (options === null || options === void 0 ? void 0 : options.height) || 200;
-      this.x = (options === null || options === void 0 ? void 0 : options.x) || 100;
-      this.y = (options === null || options === void 0 ? void 0 : options.y) || 100;
+      this.x = !isNaN(options === null || options === void 0 ? void 0 : options.x) ? options.x : 200;
+      this.y = !isNaN(options === null || options === void 0 ? void 0 : options.y) ? options.y : 200;
       this.maximizeTriggerArea = (options === null || options === void 0 ? void 0 : options.maximizeTriggerArea) || 12;
       this.nextMaximizeDelay = (options === null || options === void 0 ? void 0 : options.nextMaximizeDelay) || 500;
       this.minimizeBtnContent = (options === null || options === void 0 ? void 0 : options.minimizeBtnContent) || "";

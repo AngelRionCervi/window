@@ -86,7 +86,6 @@ export class DomBuilder {
         if (!l.hasOwnProperty("args")) l.args = [];
         const el = node ? node : this.element;
         el.addEventListener(l.type, (e) => {
-            e.preventDefault();
             if (l.hasOwnProperty("event") && !l.event) {
                 l.callback(...l.args);
             } else {
